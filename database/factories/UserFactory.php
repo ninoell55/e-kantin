@@ -24,13 +24,33 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $name = fake()->name();
+
         return [
-            'name' => fake()->name(),
+            'name' => $name,
+            'id_number' => Str::random(10),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'role' => 'member',
+            'status' => 'active',
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function admin()
+    {
+        return $this->state(fn() => ['role' => 'admin']);
+    }
+
+    public function vendor()
+    {
+        return $this->state(fn() => ['role' => 'vendor']);
+    }
+
+    public function customer()
+    {
+        return $this->state(fn() => ['role' => 'customer']);
     }
 
     /**

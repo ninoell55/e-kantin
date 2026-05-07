@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Momo+Trust+Display&family=Rubik+Vinyl&display=swap");
-
 @import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Momo+Trust+Display&family=Rubik+Vinyl&display=swap");
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -18,4 +18,31 @@
     --font-bebas: "Bebas Neue";
     --font-anton: "Anton";
     --font-rubik-vinyl: "Rubik Vinyl";
+    --color-primary: #1b2563;
+    --color-secondary: #730f00;
+    --color-tertiary: #fbbf24;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 10px;
+    }
+
+    ::selection {
+        background-color: var(--color-tertiary);
+        color: white;
+    }
 }
