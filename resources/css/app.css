@@ -1,6 +1,6 @@
-@import "tailwindcss";
-
 @import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Momo+Trust+Display&family=Rubik+Vinyl&display=swap");
+
+@import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
