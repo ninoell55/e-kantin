@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->role === 'customer';
     }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class);
+    }
 }
