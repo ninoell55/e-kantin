@@ -1,1 +1,3 @@
-<h1>Halaman Index Category</h1>
+<a href="{{ route('admin.category.tambah') }}" class="btn btn-primary">
+    + Tambah Kategori
+</a>
