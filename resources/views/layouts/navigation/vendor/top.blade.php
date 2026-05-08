@@ -43,7 +43,7 @@
                 <!-- Header Dropdown (Opsional, bikin UX lebih personal) -->
                 <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 text-left">
                     <p class="text-[10px] text-slate-500 font-inter uppercase tracking-wider">Akun Saya</p>
-                    <p class="text-sm font-bold text-primary truncate">Nino Adityo</p>
+                    <p class="text-sm font-bold text-primary truncate">Jihan Syahira</p>
                 </div>
 
                 <!-- Tombol Logout -->
