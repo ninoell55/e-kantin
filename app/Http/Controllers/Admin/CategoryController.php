@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use id;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -47,10 +48,49 @@ class CategoryController extends Controller
         // 3. Simpan ke database
         Category::create([
             'name' => $request->name,
-                'slug' => $slug
+            'slug' => $slug
         ]);
 
         // 4. Redirect kembali dengan pesan sukses
         return redirect()->route('admin.category.create')->with('success', 'Kategori berhasil ditambahkan!');
+    }
+    public function destroy($id)
+    {
+        // 1. Cari data berdasarkan ID
+        $category = Category::findOrFail($id);
+
+        // 2. Hapus data
+        $category->delete();
+
+        // 3. Kembali ke halaman index dengan pesan sukses
+        return redirect()->route('admin.category.index')->with('success', 'Kategori berhasil dihapus!');
+    }
+    
+    public function edit($id)
+    {
+        // Ambil data kategori yang mau diedit
+        $category = Category::findOrFail($id);
+
+        return view('admin.category.edit', compact('category'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // 1. Validasi
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
+        ]);
+
+        // 2. Cari data
+        $category = Category::findOrFail($id);
+
+        // 3. Update data
+        $category->update([
+            'name' => $request->name,
+            'slug' => \Illuminate\Support\Str::slug($request->name),
+        ]);
+
+        // 4. Redirect ke index
+        return redirect()->route('admin.category.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 }
