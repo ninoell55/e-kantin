@@ -10,6 +10,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // URL: /admin/kategori/tambah
+    
     // Perhatikan: Jangan tulis 'admin' lagi jika sudah ada di prefix group
     Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
     // URL: /admin/kategori (untuk proses simpan)
