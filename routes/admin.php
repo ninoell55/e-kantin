@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SellerController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -22,4 +23,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     //edit dan update bisa ditambahkan nanti
     Route::get('/category/{id}/edit', [CategoryController::class, 'edit'])->name('category.edit');
     Route::put('/category/{id}', [CategoryController::class, 'update'])->name('category.update');
+
+    // Rute Kelola Penjual
+    Route::get('/seller/index', [SellerController::class, 'index'])->name('seller.index');
+    Route::get('/seller/create', [SellerController::class, 'create'])->name('seller.create');
+    Route::post('/seller', [SellerController::class, 'store'])->name('seller.store');
+    Route::get('/seller/{id}/edit', [SellerController::class, 'edit'])->name('seller.edit');
+    Route::put('/seller/{id}', [SellerController::class, 'update'])->name('seller.update');
+    Route::delete('/seller/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
+    Route::patch('/seller/{id}/activate', [SellerController::class, 'activate'])->name('seller.activate');
 });

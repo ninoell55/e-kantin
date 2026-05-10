@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class ShopBill extends Model
 {
@@ -21,5 +22,10 @@ class ShopBill extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+    // Fungsi untuk cek apakah tagihan ini sudah melewati jatuh tempo
+    public function getIsOverdueAttribute()
+    {
+        return $this->status === 'unpaid' && Carbon::now()->gt($this->due_date);
     }
 }

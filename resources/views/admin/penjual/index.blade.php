@@ -1,1 +1,0 @@
-<h1>Halaman Index Penjual</h1>
