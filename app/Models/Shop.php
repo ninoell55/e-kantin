@@ -25,4 +25,15 @@ class Shop extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function bills()
+    {
+        return $this->hasMany(ShopBill::class);
+    }
+
+    public function currentBill()
+    {
+        // Mengambil satu tagihan terbaru
+        return $this->hasOne(ShopBill::class)->latestOfMany();
+    }
 }
