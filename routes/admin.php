@@ -3,14 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\VendorController;
+use App\Http\Controllers\Admin\CostumerController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // URL: /admin/dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/category/index', [CategoryController::class, 'index'])->name('category.index');
-    Route::get('/seller/index', [SellerController::class, 'index'])->name('seller.index');
+    Route::get('/vendor/index', [VendorController::class, 'index'])->name('vendor.index');
+    Route::get('/costumer/index', [CostumerController::class, 'index'])->name('costumer.index');
+
 
     // kelola category
     Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
@@ -20,17 +23,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/category/{id}', [CategoryController::class, 'update'])->name('category.update');
 
     // Rute Kelola Penjual
-    Route::get('/seller/create', [SellerController::class, 'create'])->name('seller.create');
-    Route::post('/seller', [SellerController::class, 'store'])->name('seller.store');
-    Route::get('/seller/{id}/edit', [SellerController::class, 'edit'])->name('seller.edit');
-    Route::put('/seller/{id}', [SellerController::class, 'update'])->name('seller.update');
-    Route::delete('/seller/{id}', [SellerController::class, 'destroy'])->name('seller.destroy');
-    Route::patch('/seller/{id}/activate', [SellerController::class, 'activate'])->name('seller.activate');
+    Route::get('/vendor/create', [VendorController::class, 'create'])->name('vendor.create');
+    Route::post('/vendor', [VendorController::class, 'store'])->name('vendor.store');
+    Route::get('/vendor/{id}/edit', [VendorController::class, 'edit'])->name('vendor.edit');
+    Route::put('/vendor/{id}', [VendorController::class, 'update'])->name('vendor.update');
+    Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendor.destroy');
+    Route::patch('/vendor/{id}/activate', [VendorController::class, 'activate'])->name('vendor.activate');
 
     //
-
-
-
+    Route::get('/costumer/create', [CostumerController::class, 'create'])->name('costumer.create');
+    Route::post('/costumer', [CostumerController::class, 'store'])->name('costumer.store');
+    Route::get('/costumer/detail/{id}', [CostumerController::class, 'show'])->name('costumer.detail');
+    Route::delete('/costumer/{id}', [CostumerController::class, 'destroy'])->name('costumer.destroy');
 
 
     //

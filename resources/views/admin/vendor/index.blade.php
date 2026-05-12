@@ -1,5 +1,5 @@
 <div style="margin-bottom: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <a href="{{ route('admin.seller.create') }}"
+    <a href="{{ route('admin.vendor.create') }}"
         style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         + Tambah Penjual
     </a>
@@ -121,16 +121,16 @@
                 <td style="padding: 10px; text-align: center; white-space: nowrap;">
                     <div style="display: flex; justify-content: center; gap: 5px;">
                         @if ($seller->status == 'pending' || ($seller->shop->currentBill->status ?? '') != 'paid')
-                            <form action="{{ route('admin.seller.activate', $seller->id) }}" method="POST"
+                            <form action="{{ route('admin.vendor.activate', $seller->id) }}" method="POST"
                                 style="margin: 0;">
                                 @csrf @method('PATCH')
                                 <button type="submit"
                                     style="background-color: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">Bayar</button>
                             </form>
                         @endif
-                        <a href="{{ route('admin.seller.edit', $seller->id) }}"
+                        <a href="{{ route('admin.vendor.edit', $seller->id) }}"
                             style="background-color: #ffc107; color: #212529; padding: 6px 10px; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: bold;">Edit</a>
-                        <form action="{{ route('admin.seller.destroy', $seller->id) }}" method="POST"
+                        <form action="{{ route('admin.vendor.destroy', $seller->id) }}" method="POST"
                             style="margin: 0;">
                             @csrf @method('DELETE')
                             <button type="submit"
