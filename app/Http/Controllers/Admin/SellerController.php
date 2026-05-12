@@ -114,26 +114,85 @@ class SellerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $seller = User::findOrFail($id);
+        $seller = User::with('shop.currentBill')->findOrFail($id);
 
         $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'name'           => 'required|string|max:255|unique:users,name,' . $id,
+            'shop_name'      => 'required|string|max:255|unique:shops,name,' . ($seller->shop->id ?? 0) . ',id',
+            'email'          => 'required|email|unique:users,email,' . $id,
+            'password'       => 'nullable|min:8',
+            'nominal_sewa'   => 'required|numeric',
+            'payment_method' => 'required',
+            'payment_proof'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'shop_logo'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'name.unique'      => 'Nama pemilik sudah digunakan.',
+            'shop_name.unique' => 'Nama warung sudah digunakan.',
+            'email.unique'     => 'Email sudah terdaftar.',
+            'password.min'     => 'Password minimal 8 karakter.',
+            'nominal_sewa.numeric' => 'Biaya sewa harus berupa angka.',
         ]);
 
-        $data = [
-            'name'  => $request->name,
-            'email' => $request->email,
-        ];
+        DB::beginTransaction();
+        try {
+            // 1. Update User
+            $data = [
+                'name'  => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+            ];
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+            $seller->update($data);
 
-        // Jika password diisi, maka update passwordnya
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            // 2. Update Logo Warung
+            if ($seller->shop) {
+                $logoPath = $seller->shop->banner_path;
+                if ($request->hasFile('shop_logo')) {
+                    // Hapus logo lama
+                    if ($logoPath && file_exists(public_path($logoPath))) {
+                        unlink(public_path($logoPath));
+                    }
+                    $logo     = $request->file('shop_logo');
+                    $logoName = 'logo_' . $seller->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+                    $logo->move(public_path('logo'), $logoName);
+                    $logoPath = 'logo/' . $logoName;
+                }
+
+                $seller->shop->update([
+                    'name'        => $request->shop_name,
+                    'banner_path' => $logoPath,
+                ]);
+
+                // 3. Update Tagihan Aktif
+                if ($seller->shop->currentBill) {
+                    $proofPath = $seller->shop->currentBill->payment_proof;
+                    if ($request->hasFile('payment_proof')) {
+                        // Hapus bukti lama
+                        if ($proofPath && file_exists(public_path($proofPath))) {
+                            unlink(public_path($proofPath));
+                        }
+                        $file      = $request->file('payment_proof');
+                        $fileName  = 'bukti_' . $seller->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                        $file->move(public_path('bukti_tf_vendor'), $fileName);
+                        $proofPath = 'bukti_tf_vendor/' . $fileName;
+                    }
+
+                    $seller->shop->currentBill->update([
+                        'amount'         => $request->nominal_sewa,
+                        'payment_method' => $request->payment_method,
+                        'payment_proof'  => $proofPath,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('admin.seller.index')->with('success', 'Data penjual berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withInput()->with('error', 'Gagal: ' . $e->getMessage());
         }
-
-        $seller->update($data);
-
-        return redirect()->route('admin.seller.index')->with('success', 'Data penjual diperbarui!');
     }
 
     public function destroy($id)
