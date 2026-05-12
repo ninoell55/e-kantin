@@ -33,8 +33,7 @@ class DashboardController extends Controller
             ->whereDate('created_at', $today)
             ->count();
 
-        // 4. Ambil Antrean Pesanan (Hanya yang berstatus pending atau processing)
-        // Kita gunakan 'with' untuk menarik data pembeli (user) dan item pesanannya sekaligus
+
         $pendingOrders = Order::with(['user', 'items'])
             ->where('shop_id', $shop->id)
             ->whereIn('status', ['pending', 'processing'])
