@@ -84,9 +84,9 @@
                     <span class="w-1 h-4 bg-[#7f1d1d] rounded-full"></span>
                     Daftar Produk
                 </h3>
-                <button class="bg-[#7f1d1d] text-white w-8 h-8 rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-all border-2 border-white">
-                    <i class="ti ti-plus text-lg"></i>
-                </button>
+                <a href="{{ route('vendor.product.create') }}" class="px-3 py-3 bg-[#8b0000] text-white rounded-xl text-[10px] font-bold whitespace-nowrap shadow-sm">
+                    <i class="ti ti-plus"></i>
+                </a>
             </div>
 
             <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">

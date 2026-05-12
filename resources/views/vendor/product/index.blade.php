@@ -12,16 +12,16 @@
                 <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest ml-3">Total: {{ count($products ?? range(1,15)) }} Item</p>
             </div>
             
-            <button class="bg-[#7f1d1d] text-white w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-all border-2 border-white">
-                <i class="ti ti-plus text-xl"></i>
-            </button>
+            <a href="{{ route('vendor.product.create') }}" class="px-3 py-3 bg-[#8b0000] text-white rounded-xl text-[10px] font-bold whitespace-nowrap shadow-sm">
+                <i class="ti ti-plus"></i>
+            </a>
         </div>
 
         <div class="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar">
             <button class="px-4 py-2 bg-[#1e2a5e] text-white rounded-xl text-[10px] font-bold whitespace-nowrap shadow-sm">SEMUA</button>
             <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">MINUMAN</button>
             <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">MAKANAN BERAT</button>
-            <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">SNACK</button>
+            <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">MAKANAN RINGAN</button>
         </div>
 
         <div class="grid grid-cols-3 gap-x-3 gap-y-6">
@@ -51,9 +51,11 @@
                     </div>
                 </div>
 
-                <div class="w-full {{ $index % 2 == 0 ? 'bg-[#7f1d1d]' : 'bg-[#1e2a5e]' }} text-white text-[9px] text-center py-1.5 mt-2 rounded-xl font-extrabold shadow-md truncate px-1 uppercase">
-                    {{ is_object($p) ? $p->name : 'Nama Produk #' . ($index + 1) }}
-                </div>
+                <a href="{{ route('vendor.product.show') }}" class="block transition-transform active:scale-95">
+                    <div class="w-full {{ $index % 2 == 0 ? 'bg-[#7f1d1d]' : 'bg-[#1e2a5e]' }} text-white text-[9px] text-center py-1.5 mt-2 rounded-xl font-extrabold shadow-md truncate px-1 uppercase">
+                        {{ is_object($p) ? $p->name : 'Nama Produk #' . ($index + 1) }}
+                    </div>
+                </a>
                 
                 <div class="flex justify-center items-center gap-1 mt-1.5">
                     <span class="text-xs font-black text-gray-800">Rp 15.000</span>
