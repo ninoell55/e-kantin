@@ -1,7 +1,7 @@
 <div class="container" style="max-width: 600px; margin: 40px auto; font-family: 'Segoe UI', sans-serif;">
     <h2 style="margin-bottom: 25px; text-align: center;">Edit Data Penjual</h2>
 
-    <form action="{{ route('admin.seller.update', $seller->id) }}" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('admin.vendor.update', $vendor->id) }}" method="POST" enctype="multipart/form-data"
         style="background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
         @csrf
         @method('PUT')
@@ -20,23 +20,23 @@
         {{-- Nama Pemilik --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Pemilik Warung</label>
-            <input type="text" name="name" value="{{ old('name', $seller->name) }}"
+            <input type="text" name="name" value="{{ old('name', $vendor->name) }}"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
         </div>
 
         {{-- Nama Warung --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Warung</label>
-            <input type="text" name="shop_name" value="{{ old('shop_name', $seller->shop->name ?? '') }}"
+            <input type="text" name="shop_name" value="{{ old('shop_name', $vendor->shop->name ?? '') }}"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
         </div>
 
         {{-- Logo Warung --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Logo Warung</label>
-            @if ($seller->shop && $seller->shop->banner_path)
+            @if ($vendor->shop && $vendor->shop->banner_path)
                 <div style="margin-bottom: 8px;">
-                    <img src="{{ asset($seller->shop->banner_path) }}" width="60" height="60"
+                    <img src="{{ asset($vendor->shop->banner_path) }}" width="60" height="60"
                         style="object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
                     <span style="font-size: 11px; color: #999; margin-left: 8px;">Logo saat ini</span>
                 </div>
@@ -55,21 +55,21 @@
         {{-- Email --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Email Login</label>
-            <input type="email" name="email" value="{{ old('email', $seller->email) }}"
+            <input type="email" name="email" value="{{ old('email', $vendor->email) }}"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
         </div>
 
         {{-- WhatsApp --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nomor WhatsApp</label>
-            <input type="text" name="phone" value="{{ old('phone', $seller->phone) }}"
+            <input type="text" name="phone" value="{{ old('phone', $vendor->phone) }}"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
         </div>
 
         {{-- Biaya Sewa --}}
         <div style="margin-bottom: 15px;">
             <label style="display: block; font-weight: bold; margin-bottom: 5px;">Biaya Sewa (Rp)</label>
-            <input type="number" name="nominal_sewa" value="{{ old('nominal_sewa', $seller->shop->currentBill->amount ?? 0) }}"
+            <input type="number" name="nominal_sewa" value="{{ old('nominal_sewa', $vendor->shop->currentBill->amount ?? 0) }}"
                 style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
         </div>
 
@@ -78,26 +78,26 @@
             <label style="display: block; font-weight: bold; margin-bottom: 10px;">Metode Pembayaran</label>
             <select name="payment_method" id="payment_method"
                 style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 10px;">
-                <option value="cash" {{ ($seller->shop->currentBill->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
+                <option value="cash" {{ ($vendor->shop->currentBill->payment_method ?? '') == 'cash' ? 'selected' : '' }}>
                     Cash (Tunai)
                 </option>
-                <option value="transfer" {{ ($seller->shop->currentBill->payment_method ?? '') == 'transfer' ? 'selected' : '' }}>
+                <option value="transfer" {{ ($vendor->shop->currentBill->payment_method ?? '') == 'transfer' ? 'selected' : '' }}>
                     Transfer Bank
                 </option>
             </select>
 
             {{-- Bukti Transfer --}}
             <div id="bukti_tf_container"
-                style="display: {{ ($seller->shop->currentBill->payment_method ?? '') == 'transfer' ? 'block' : 'none' }}; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                style="display: {{ ($vendor->shop->currentBill->payment_method ?? '') == 'transfer' ? 'block' : 'none' }}; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
                 <p style="font-size: 12px; color: #2b6cb0; background: #ebf8ff; padding: 10px; border-radius: 4px;">
                     <strong>Info Rekening:</strong> BCA 1234567890 a/n Admin E-Kantin
                 </p>
 
                 {{-- Preview bukti lama --}}
-                @if ($seller->shop && $seller->shop->currentBill && $seller->shop->currentBill->payment_proof)
+                @if ($vendor->shop && $vendor->shop->currentBill && $vendor->shop->currentBill->payment_proof)
                     <div style="margin-bottom: 8px;">
-                        <a href="{{ asset($seller->shop->currentBill->payment_proof) }}" target="_blank">
-                            <img src="{{ asset($seller->shop->currentBill->payment_proof) }}" width="60" height="60"
+                        <a href="{{ asset($vendor->shop->currentBill->payment_proof) }}" target="_blank">
+                            <img src="{{ asset($vendor->shop->currentBill->payment_proof) }}" width="60" height="60"
                                 style="object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: zoom-in;">
                         </a>
                         <span style="font-size: 11px; color: #999; margin-left: 8px;">Bukti saat ini</span>
@@ -122,7 +122,7 @@
 
         {{-- Tombol --}}
         <div style="display: flex; gap: 10px;">
-            <a href="{{ route('admin.seller.index') }}"
+            <a href="{{ route('admin.vendor.index') }}"
                 style="flex: 1; text-align: center; background: #6c757d; color: white; padding: 12px; border-radius: 6px; font-weight: bold; text-decoration: none;">
                 Batal
             </a>

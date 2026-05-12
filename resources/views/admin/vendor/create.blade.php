@@ -2,7 +2,7 @@
     <h2 style="margin-bottom: 25px; text-align: center;">Tambah Penjual Baru</h2>
 
     {{-- PENTING: Tambahkan enctype agar bisa upload file --}}
-    <form action="{{ route('admin.seller.store') }}" method="POST" enctype="multipart/form-data"
+    <form action="{{ route('admin.vendor.store') }}" method="POST" enctype="multipart/form-data"
         style="background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
         @csrf
 
