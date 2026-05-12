@@ -1,44 +1,61 @@
-<!-- resources/views/categories/create.blade.php -->
+{{-- resources/views/admin/category/create.blade.php --}}
+{{-- Di-include ke index.blade.php sebagai modal --}}
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Tambah Kategori Baru</title>
-    <style>
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
-        .btn { padding: 10px 15px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
-        .text-danger { color: red; font-size: 0.9em; }
-    </style>
-</head>
-<body>
-
-    <h2>Tambah Kategori</h2>
-
-    <!-- Tampilkan pesan sukses jika ada -->
-    @if(session('success'))
-        <div style="color: green; margin-bottom: 15px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <form action="{{ route('admin.category.store') }}" method="POST">
-        <!-- @csrf WAJIB ditambahkan pada form Laravel -->
-        @csrf
-
-        <div class="form-group">
-            <label for="name">Nama Kategori</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Contoh: Makanan Berat" required>
-            <!-- Menampilkan error validasi jika nama kosong/salah -->
-            @error('name')
-                <div class="text-danger">{{ $message }}</div>
-            @enderror
+<div class="modal-backdrop" id="modal-create">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="modal-title">Tambah Kategori</span>
+            <button class="modal-close" onclick="closeModal('modal-create')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
 
-        <button type="submit" class="btn">Simpan Data</button>
-    </form>
+        <form action="{{ route('admin.category.store') }}" method="POST">
+            @csrf
+            <input type="hidden" name="_form" value="create">
 
-</body>
-</html>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        Nama Kategori <span class="required">*</span>
+                    </label>
+                    <input type="text" id="name" name="name"
+                        class="form-input {{ $errors->has('name') && old('_form') === 'create' ? 'input-error' : '' }}"
+                        value="{{ old('_form') === 'create' ? old('name') : '' }}"
+                        placeholder="Contoh: Makanan Berat, Minuman..."
+                        oninput="generateSlug(this.value)"
+                        autocomplete="off">
+                    @if($errors->has('name') && old('_form') === 'create')
+                        <span class="error-msg">{{ $errors->first('name') }}</span>
+                    @endif
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="slug">
+                        Slug <span class="badge-auto">otomatis</span>
+                    </label>
+                    <div class="input-prefix-wrap">
+                        <span class="input-prefix">/kategori/</span>
+                        <input type="text" id="slug" name="slug"
+                            class="form-input input-with-prefix"
+                            value="{{ old('_form') === 'create' ? old('slug') : '' }}"
+                            placeholder="makanan-berat" readonly>
+                    </div>
+                    <p class="form-hint">Dibuat otomatis dari nama kategori.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeModal('modal-create')">Batal</button>
+                <button type="submit" class="btn-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
