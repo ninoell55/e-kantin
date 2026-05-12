@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB; // Tambahkan ini jika DB merah
 
-class SellerController extends Controller
+class VendorController extends Controller
 {
     public function index()
     {
@@ -20,12 +20,12 @@ class SellerController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.seller.index', compact('sellers'));
+        return view('admin.vendor.index', compact('sellers'));
     }
 
     public function create()
     {
-        return view('admin.seller.create');
+        return view('admin.vendor.create');
     }
 
     public function store(Request $request)
@@ -99,7 +99,7 @@ class SellerController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('admin.seller.index')->with('success', 'Penjual berhasil ditambahkan!');
+            return redirect()->route('admin.vendor.index')->with('success', 'Penjual berhasil ditambahkan!');
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withInput()->with('error', 'Gagal: ' . $e->getMessage());
@@ -108,8 +108,8 @@ class SellerController extends Controller
 
     public function edit($id)
     {
-        $seller = User::findOrFail($id);
-        return view('admin.seller.edit', compact('seller'));
+        $vendor = User::findOrFail($id);
+        return view('admin.vendor.edit', compact('vendor'));
     }
 
     public function update(Request $request, $id)
@@ -188,7 +188,7 @@ class SellerController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.seller.index')->with('success', 'Data penjual berhasil diperbarui!');
+            return redirect()->route('admin.vendor.index')->with('success', 'Data penjual berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withInput()->with('error', 'Gagal: ' . $e->getMessage());
@@ -197,10 +197,10 @@ class SellerController extends Controller
 
     public function destroy($id)
     {
-        $seller = User::findOrFail($id);
-        $seller->delete();
+        $vendor = User::findOrFail($id);
+        $vendor->delete();
 
-        return redirect()->route('admin.seller.index')->with('success', 'Penjual telah dihapus!');
+        return redirect()->route('admin.vendor.index')->with('success', 'Penjual telah dihapus!');
     }
     public function activate($id)
     {
