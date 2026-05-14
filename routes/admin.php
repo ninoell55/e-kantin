@@ -30,11 +30,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendor.destroy');
     Route::patch('/vendor/{id}/activate', [VendorController::class, 'activate'])->name('vendor.activate');
 
-    //
+    //costumer
     Route::get('/costumer/create', [CostumerController::class, 'create'])->name('costumer.create');
     Route::post('/costumer', [CostumerController::class, 'store'])->name('costumer.store');
     Route::get('/costumer/detail/{id}', [CostumerController::class, 'show'])->name('costumer.detail');
-    Route::delete('/costumer/{id}', [CostumerController::class, 'destroy'])->name('costumer.destroy');
+    Route::patch('/costumer/{id}/ban', [CostumerController::class, 'ban'])->name('costumer.ban');
+    Route::patch('/costumer/{id}/activate', [CostumerController::class, 'activate'])->name('costumer.activate');
 
 
     //

@@ -54,12 +54,19 @@ class CostumerController extends Controller
         $customer = User::where('role', 'customer')->findOrFail($id);
         return view('admin.costumer.detail', compact('customer'));
     }
-
-    public function destroy($id)
+    public function ban($id)
     {
         $customer = User::where('role', 'customer')->findOrFail($id);
-        $customer->delete();
+        $customer->update(['status' => 'banned']);
 
-        return redirect()->route('admin.costumer.index')->with('success', 'Customer berhasil dihapus.');
+        return redirect()->route('admin.costumer.index')->with('success', 'Customer berhasil di-banned.');
+    }
+
+    public function activate($id)
+    {
+        $customer = User::where('role', 'customer')->findOrFail($id);
+        $customer->update(['status' => 'active']);
+
+        return redirect()->route('admin.costumer.index')->with('success', 'Customer berhasil diaktifkan.');
     }
 }
