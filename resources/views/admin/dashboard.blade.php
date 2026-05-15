@@ -7,12 +7,14 @@
 <style>
     .page-header { margin-bottom: 24px !important; }
     .page-title { font-size: 20px !important; font-weight: 600 !important; color: var(--navy) !important; }
-    .stat-grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 16px !important; }
+    .stat-grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 16px !important; margin-top: 24px !important; }
     .stat-card {
         background: var(--white) !important; border-radius: 14px !important;
         border: 1px solid #e8eaf0 !important; padding: 20px !important;
         display: flex !important; align-items: center !important; gap: 16px !important;
+        transition: transform 0.15s, box-shadow 0.15s !important;
     }
+    .stat-card:hover { transform: translateY(-2px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important; }
     .stat-icon {
         width: 48px !important; height: 48px !important; border-radius: 12px !important;
         display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;
@@ -23,7 +25,7 @@
     .icon-amber { background: #fff7e6 !important; color: #d97706 !important; }
     .icon-red   { background: #fef2f2 !important; color: #dc2626 !important; }
     .stat-info { display: flex !important; flex-direction: column !important; gap: 4px !important; }
-    .stat-label { font-size: 12px !important; color: var(--gray-400) !important; font-weight: 500 !important; }
+    .stat-label { font-size: 12px !important; color: var(--gray-400) !important; font-weight: 500 !important; text-transform: uppercase !important; letter-spacing: 0.04em !important; }
     .stat-value { font-size: 20px !important; font-weight: 600 !important; color: var(--navy) !important; }
 </style>
 @endsection
@@ -37,7 +39,10 @@
     <div class="stat-card">
         <div class="stat-icon icon-blue">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M4 6h16M4 10h16M4 14h8"/><rect x="2" y="3" width="20" height="16" rx="2"/>
+                <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"/>
             </svg>
         </div>
         <div class="stat-info">
@@ -45,6 +50,7 @@
             <span class="stat-value">{{ $totalKategori ?? 0 }}</span>
         </div>
     </div>
+
     <div class="stat-card">
         <div class="stat-icon icon-green">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -58,6 +64,7 @@
             <span class="stat-value">{{ $totalPengguna ?? 0 }}</span>
         </div>
     </div>
+
     <div class="stat-card">
         <div class="stat-icon icon-amber">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -71,6 +78,7 @@
             <span class="stat-value">{{ $totalPenjual ?? 0 }}</span>
         </div>
     </div>
+
     <div class="stat-card">
         <div class="stat-icon icon-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">

@@ -1,122 +1,151 @@
-<div class="container" style="max-width: 600px; margin: 40px auto; font-family: 'Segoe UI', sans-serif;">
-    <h2 style="margin-bottom: 25px; text-align: center;">Tambah Penjual Baru</h2>
+{{-- resources/views/admin/vendor/create.blade.php --}}
+@extends('layouts.admin')
 
-    {{-- PENTING: Tambahkan enctype agar bisa upload file --}}
-    <form action="{{ route('admin.vendor.store') }}" method="POST" enctype="multipart/form-data"
-        style="background: #ffffff; padding: 30px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        @csrf
+@section('title', 'Tambah Penjual - Kantin Admin')
 
-        {{-- Error Messages --}}
-        @if ($errors->any())
-            <div
-                style="background: #fff5f5; color: #c53030; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
-                <ul style="margin: 0;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+@section('styles')
+<style>
+    .page-header { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 24px !important; }
+    .page-title { font-size: 20px !important; font-weight: 600 !important; color: var(--navy) !important; }
+    .page-sub { font-size: 13px !important; color: var(--gray-400) !important; margin-top: 4px !important; }
+    .breadcrumb-link { color: var(--accent) !important; text-decoration: none !important; }
+    .breadcrumb-link:hover { text-decoration: underline !important; }
+    .btn-back { display: inline-flex !important; align-items: center !important; gap: 7px !important; padding: 9px 16px !important; border: 1px solid #e8eaf0 !important; border-radius: 10px !important; font-size: 14px !important; font-weight: 500 !important; color: var(--navy) !important; text-decoration: none !important; background: #fff !important; }
+    .btn-back:hover { background: var(--gray-100) !important; }
+    .btn-back svg { width: 15px !important; height: 15px !important; }
+    .form-card { background: #fff !important; border-radius: 14px !important; border: 1px solid #e8eaf0 !important; padding: 28px !important; max-width: 620px !important; }
+    .section-title { font-size: 13px !important; font-weight: 600 !important; color: var(--navy) !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; margin-bottom: 16px !important; padding-bottom: 10px !important; border-bottom: 1px solid #f0f1f5 !important; }
+    .form-group { margin-bottom: 18px !important; }
+    .form-label { display: block !important; font-size: 13px !important; font-weight: 600 !important; color: var(--navy) !important; margin-bottom: 8px !important; }
+    .required { color: #dc2626 !important; }
+    .form-input { width: 100% !important; padding: 10px 14px !important; border: 1.5px solid #e8eaf0 !important; border-radius: 10px !important; font-family: var(--font) !important; font-size: 14px !important; color: var(--navy) !important; outline: none !important; background: #fff !important; transition: border-color 0.15s !important; }
+    .form-input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(61,79,214,0.08) !important; }
+    .form-input::placeholder { color: var(--gray-400) !important; }
+    .form-hint { font-size: 12px !important; color: var(--gray-400) !important; margin-top: 5px !important; }
+    .form-select { width: 100% !important; padding: 10px 14px !important; border: 1.5px solid #e8eaf0 !important; border-radius: 10px !important; font-family: var(--font) !important; font-size: 14px !important; color: var(--navy) !important; outline: none !important; background: #fff !important; }
+    .form-section { background: #f8f9fc !important; border-radius: 12px !important; padding: 16px !important; margin-bottom: 18px !important; }
+    .error-list { background: #fef2f2 !important; color: #dc2626 !important; padding: 12px 16px !important; border-radius: 10px !important; margin-bottom: 20px !important; font-size: 13px !important; }
+    .error-list ul { padding-left: 16px !important; }
+    .info-box { background: #ebf8ff !important; color: #2b6cb0 !important; padding: 10px 14px !important; border-radius: 8px !important; font-size: 12px !important; margin-bottom: 12px !important; }
+    .logo-preview { display: none; margin-top: 12px !important; text-align: center !important; }
+    .logo-preview img { width: 72px !important; height: 72px !important; object-fit: cover !important; border-radius: 50% !important; border: 2px solid #e8eaf0 !important; }
+    .form-footer { display: flex !important; align-items: center !important; justify-content: flex-end !important; gap: 10px !important; padding-top: 16px !important; border-top: 1px solid #f0f1f5 !important; margin-top: 8px !important; }
+    .btn-cancel { display: inline-flex !important; align-items: center !important; padding: 10px 18px !important; border: 1px solid #e8eaf0 !important; border-radius: 10px !important; font-size: 14px !important; font-weight: 500 !important; color: var(--navy) !important; text-decoration: none !important; background: #fff !important; }
+    .btn-submit { display: inline-flex !important; align-items: center !important; gap: 8px !important; padding: 10px 20px !important; background: var(--accent) !important; color: #fff !important; border-radius: 10px !important; font-size: 14px !important; font-weight: 500 !important; border: none !important; cursor: pointer !important; font-family: var(--font) !important; }
+    .btn-submit:hover { opacity: 0.88 !important; }
+    .btn-submit svg { width: 15px !important; height: 15px !important; }
+</style>
+@endsection
 
-        {{-- Nama Pemilik --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Pemilik Warung</label>
-            <input type="text" name="name" value="{{ old('name') }}"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
-        </div>
-
-        {{-- Nama Warung --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nama Warung</label>
-            <input type="text" name="shop_name" value="{{ old('shop_name') }}"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
-        </div>
-
-        {{-- Email --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Email Login</label>
-            <input type="email" name="email" value="{{ old('email') }}"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
-        </div>
-
-        {{-- WhatsApp --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nomor WhatsApp</label>
-            <input type="text" name="phone" value="{{ old('phone') }}"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-        </div>
-
-        {{-- Biaya Sewa --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Biaya Sewa (Rp)</label>
-            <input type="number" name="nominal_sewa" value="{{ old('nominal_sewa') }}"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
-        </div>
-
-        {{-- Pembayaran --}}
-        <div style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 10px;">Metode Pembayaran</label>
-            <select name="payment_method" id="payment_method"
-                style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 10px;">
-                <option value="cash">Cash (Tunai)</option>
-                <option value="transfer">Transfer Bank</option>
-            </select>
-
-            {{-- Kolom Bukti TF (Hidden by Default) --}}
-            <div id="bukti_tf_container"
-                style="display: none; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-                <p style="font-size: 12px; color: #2b6cb0; background: #ebf8ff; padding: 10px; border-radius: 4px;">
-                    <strong>Info Rekening:</strong> BCA 1234567890 a/n Admin E-Kantin
-                </p>
-                <label style="display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px;">Upload Bukti
-                    Transfer</label>
-                <input type="file" name="payment_proof" style="font-size: 13px;">
-            </div>
-        </div>
-
-        {{-- Logo Warung --}}
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Logo Warung</label>
-            <input type="file" name="shop_logo" accept="image/jpg,image/jpeg,image/png"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; background: #fff;"
-                onchange="previewLogo(this)">
-            <div id="logo_preview" style="display: none; margin-top: 10px; text-align: center;">
-                <img id="logo_img" src="" width="80" height="80"
-                    style="object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
-            </div>
-            <small style="color: #999;">Format: JPG/PNG, maks. 2MB. Tersimpan ke public/shop_logos.</small>
-        </div>
-
-        {{-- Password --}}
-        <div style="margin-bottom: 25px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Password Login</label>
-            <input type="password" name="password"
-                style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" required>
-        </div>
-
-        <button type="submit"
-            style="width: 100%; background: #28a745; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">
-            Simpan & Aktifkan Penjual
-        </button>
-    </form>
+@section('content')
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Tambah Penjual</h1>
+        <p class="page-sub">
+            <a href="{{ route('admin.vendor.index') }}" class="breadcrumb-link">Kelola Penjual</a>
+            &rsaquo; Tambah Baru
+        </p>
+    </div>
+    <a href="{{ route('admin.vendor.index') }}" class="btn-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Kembali
+    </a>
 </div>
 
+<div class="form-card">
+    @if($errors->any())
+    <div class="error-list">
+        <ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+    </div>
+    @endif
+
+    <form action="{{ route('admin.vendor.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <p class="section-title">Informasi Pemilik</p>
+        <div class="form-group">
+            <label class="form-label">Nama Pemilik Warung <span class="required">*</span></label>
+            <input type="text" name="name" value="{{ old('name') }}" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email Login <span class="required">*</span></label>
+            <input type="email" name="email" value="{{ old('email') }}" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Nomor WhatsApp</label>
+            <input type="text" name="phone" value="{{ old('phone') }}" class="form-input" placeholder="08123456789">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <input type="password" name="password" class="form-input" required>
+            <p class="form-hint">Minimal 8 karakter.</p>
+        </div>
+
+        <p class="section-title" style="margin-top: 24px !important;">Informasi Warung</p>
+        <div class="form-group">
+            <label class="form-label">Nama Warung <span class="required">*</span></label>
+            <input type="text" name="shop_name" value="{{ old('shop_name') }}" class="form-input" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Logo Warung</label>
+            <input type="file" name="shop_logo" accept="image/jpg,image/jpeg,image/png"
+                class="form-input" style="padding: 8px 14px !important;" onchange="previewLogo(this)">
+            <div class="logo-preview" id="logo_preview">
+                <img id="logo_img" src="">
+                <p style="font-size: 11px; color: var(--gray-400); margin-top: 6px;">Preview logo</p>
+            </div>
+            <p class="form-hint">Format JPG/PNG, maks. 2MB.</p>
+        </div>
+
+        <p class="section-title" style="margin-top: 24px !important;">Pembayaran Sewa</p>
+        <div class="form-group">
+            <label class="form-label">Biaya Sewa (Rp) <span class="required">*</span></label>
+            <input type="number" name="nominal_sewa" value="{{ old('nominal_sewa') }}" class="form-input" required>
+        </div>
+        <div class="form-section">
+            <div class="form-group" style="margin-bottom: 12px !important;">
+                <label class="form-label">Metode Pembayaran <span class="required">*</span></label>
+                <select name="payment_method" id="payment_method" class="form-select">
+                    <option value="cash">Cash (Tunai)</option>
+                    <option value="transfer">Transfer Bank</option>
+                </select>
+            </div>
+            <div id="bukti_tf_container" style="display: none;">
+                <div class="info-box"><strong>Info Rekening:</strong> BCA 1234567890 a/n Admin E-Kantin</div>
+                <label class="form-label">Upload Bukti Transfer</label>
+                <input type="file" name="payment_proof" class="form-input" style="padding: 8px 14px !important;">
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <a href="{{ route('admin.vendor.index') }}" class="btn-cancel">Batal</a>
+            <button type="submit" class="btn-submit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Simpan Penjual
+            </button>
+        </div>
+    </form>
+</div>
+@endsection
+
+@section('scripts')
 <script>
     document.getElementById('payment_method').addEventListener('change', function() {
-        const proofField = document.getElementById('bukti_tf_container');
-        proofField.style.display = (this.value === 'transfer') ? 'block' : 'none';
+        document.getElementById('bukti_tf_container').style.display = this.value === 'transfer' ? 'block' : 'none';
     });
-
     function previewLogo(input) {
-        const preview = document.getElementById('logo_preview');
-        const img = document.getElementById('logo_img');
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = e => {
-                img.src = e.target.result;
-                preview.style.display = 'block';
+                document.getElementById('logo_img').src = e.target.result;
+                document.getElementById('logo_preview').style.display = 'block';
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 </script>
+@endsection
