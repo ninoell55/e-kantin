@@ -27,21 +27,19 @@
             --font:      'Poppins', sans-serif;
         }
 
-        /* ── RESET PENTING ── */
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
             font-family: var(--font);
             background: var(--gray-100);
-            overflow-x: hidden;
+            overflow: hidden !important;
         }
 
-        /* ── LAYOUT ── */
         .admin-wrapper {
             display: flex;
             height: 100vh;
-            overflow: hidden; /* cegah scroll di wrapper */
+            width: 100%;
         }
 
         /* ── SIDEBAR ── */
@@ -52,11 +50,9 @@
             display: flex;
             flex-direction: column;
             flex-shrink: 0;
-            position: fixed;
-            top: 0; left: 0;
-            z-index: 100;
             overflow-y: auto;
         }
+
         .sidebar-brand {
             display: flex; align-items: center; gap: 10px;
             padding: 20px 20px 18px;
@@ -66,17 +62,17 @@
         .brand-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--white); flex-shrink: 0; }
         .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
         .brand-title { font-size: 15px; font-weight: 600; color: var(--white); }
-        .brand-sub { font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+        .brand-sub { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
 
         .sidebar-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
 
         .nav-item {
             display: flex; align-items: center; gap: 10px;
             padding: 11px 14px; border-radius: 10px;
-            font-size: 14px; font-weight: 500; color: var(--gray-400);
+            font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.65);
             text-decoration: none; cursor: pointer;
             background: none; border: none; width: 100%; text-align: left;
-            transition: background 0.15s, color 0.15s;
+            transition: all 0.15s ease;
         }
         .nav-item:hover { background: var(--navy-hover); color: var(--white); }
         .nav-item.active { background: var(--accent-bg); color: var(--white); position: relative; }
@@ -85,7 +81,7 @@
             width: 3px; background: var(--accent); border-radius: 3px 0 0 3px;
         }
         .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
-        .chevron { width: 14px; height: 14px; margin-left: auto; transition: transform 0.25s ease; }
+        .chevron { width: 14px; height: 14px; margin-left: auto; transition: transform 0.2s ease; }
 
         .nav-group { display: flex; flex-direction: column; }
         .nav-sub { display: none; flex-direction: column; padding: 4px 0 4px 42px; }
@@ -93,21 +89,20 @@
         .nav-group.open .chevron { transform: rotate(180deg); }
         .nav-sub-item {
             display: block; padding: 9px 10px;
-            font-size: 13px; color: var(--gray-400);
+            font-size: 13px; color: rgba(255,255,255,0.65);
             text-decoration: none; border-radius: 7px;
-            transition: background 0.15s, color 0.15s;
+            transition: all 0.15s ease;
         }
         .nav-sub-item:hover { background: var(--navy-hover); color: var(--white); }
-        .nav-sub-item.active { color: var(--white); background: var(--navy-hover); }
+        .nav-sub-item.active { color: var(--white); background: var(--accent-bg); }
 
         /* ── MAIN AREA ── */
         .main-area {
-            margin-left: var(--sidebar-w);
             flex: 1;
             display: flex;
             flex-direction: column;
-            height: 100vh;       /* pas dengan viewport */
-            overflow-y: auto;    /* scroll HANYA di sini */
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* ── TOPBAR ── */
@@ -118,7 +113,7 @@
             border-bottom: 1px solid #e8eaf0;
             display: flex; align-items: center;
             padding: 0 28px; gap: 16px;
-            position: sticky; top: 0; z-index: 50; /* sticky dalam .main-area */
+            flex-shrink: 0;
         }
         .search-wrap { flex: 1; max-width: 440px; position: relative; }
         .search-icon {
@@ -143,13 +138,22 @@
         }
         .user-info { display: flex; flex-direction: column; line-height: 1.2; }
         .user-name { font-size: 14px; font-weight: 600; color: var(--navy); }
-        .user-role { font-size: 10px; color: var(--gray-400); letter-spacing: 0.07em; }
+        .user-role { font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.07em; }
 
         /* ── PAGE CONTENT ── */
-        .page-content { padding: 28px; flex: 1; }
+        .page-content {
+            padding: 28px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* ── MODAL ── */
+        .modal-backdrop { display: none !important; position: fixed !important; inset: 0 !important; background: rgba(15,20,40,0.45) !important; z-index: 200 !important; align-items: center !important; justify-content: center !important; }
+        .modal-backdrop.show { display: flex !important; }
+        .modal { background: #fff !important; border-radius: 16px !important; width: 100% !important; max-width: 420px !important; margin: 16px !important; box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important; animation: modalIn 0.2s ease !important; overflow: hidden !important; }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 
-    {{-- CSS tambahan per halaman --}}
     @yield('styles')
 </head>
 
@@ -159,12 +163,10 @@
     @include('layouts.navigation.admin.sidebar')
 
     <div class="main-area">
-
         <header class="topbar">
             <div class="search-wrap">
                 <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="7"/>
-                    <line x1="16.5" y1="16.5" x2="21" y2="21"/>
+                    <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
                 </svg>
                 <input type="text" class="search-input" placeholder="Cari sesuatu...">
             </div>
@@ -182,7 +184,6 @@
         <main class="page-content">
             @yield('content')
         </main>
-
     </div>
 </div>
 
@@ -191,7 +192,21 @@
         const group = document.getElementById(groupId);
         group.classList.toggle('open');
     }
+    function openModal(id) {
+        document.getElementById(id).classList.add('show');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.modal-backdrop').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                if (e.target === el) closeModal(el.id);
+            });
+        });
+    });
 </script>
+
 @yield('scripts')
 </body>
 </html>
