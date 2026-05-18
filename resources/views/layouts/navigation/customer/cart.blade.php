@@ -34,7 +34,7 @@
         <span class="text-primary">E-KANTIN</span> <span class="text-danger">SMEA</span>
       </h2>
     </div>
-    <a href="/menu" class="text-primary text-sm font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity">
+    <a href="/customer/menu" class="text-primary text-sm font-semibold flex items-center gap-1 hover:opacity-70 transition-opacity">
       ← <span class="hidden sm:inline">Kembali ke Menu</span>
     </a>
   </nav>
@@ -139,7 +139,7 @@
             <span class="font-bold text-xl text-primary">Rp<span id="total">42.000</span></span>
           </div>
 
-          <a href="/checkout">
+          <a href="/customer/checkout">
             <button class="w-full mt-5 py-4 rounded-2xl bg-secondary text-primary font-bold text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all">
               Checkout Sekarang →
             </button>

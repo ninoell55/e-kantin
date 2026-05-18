@@ -42,7 +42,7 @@
     <div class="flex items-center gap-2">
       <input type="text" placeholder="Cari makanan..." class="hidden md:block px-4 py-2.5 rounded-xl border border-gray-200 w-56 outline-none focus:border-primary text-sm transition-all">
       <button class="md:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-primary text-lg">🔍</button>
-<a href="/cart">
+<a href="{{ route('customer.cart') }}">
   <button class="bg-primary text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-1.5">
       🛒 <span class="hidden sm:inline">Keranjang</span>
       <span class="bg-secondary text-primary text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
@@ -271,7 +271,7 @@
   </div>
 
   <!-- Floating Cart -->
-<a href="/cart">
+<a href="{{ route('customer.cart') }}">
   <div class="fixed bottom-5 right-5 bg-secondary text-primary w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl shadow-xl cursor-pointer hover:scale-110 active:scale-95 transition-transform z-50">
       🛒
   </div>

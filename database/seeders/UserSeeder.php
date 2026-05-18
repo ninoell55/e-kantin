@@ -37,10 +37,9 @@ class UserSeeder extends Seeder
         User::factory()->customer()->create([
             'name' => 'Siswa Roni',
             'email' => 'customer1@ekantin.test',
-            'password' => 'password',
+            'password' => Hash::make('password'),
             'status' => 'active',
-        ]);
-
+]);
         User::factory()->customer()->create([
             'name' => 'Siswa Indah',
             'email' => 'customer2@ekantin.test',
