@@ -44,7 +44,7 @@ tailwind.config = {
         </h2>
     </div>
 
-    <a href="/cart" class="text-primary font-semibold text-sm hover:opacity-70 transition">
+    <a href="/customer/cart" class="text-primary font-semibold text-sm hover:opacity-70 transition">
         ← Kembali
     </a>
 
@@ -245,7 +245,7 @@ tailwind.config = {
 
                 </div>
 
-                <a href="/tracking">
+                <a href="/customer/tracking">
 
                     <button class="w-full mt-6 bg-secondary text-primary py-4 rounded-2xl font-bold hover:-translate-y-1 hover:shadow-lg transition-all">
                         Buat Pesanan →
