@@ -107,7 +107,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;">
                 <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
             </svg>
-            Hapus Customer
+            Ban Customer
         </button>
     </div>
 </div>
@@ -122,15 +122,15 @@
                 </svg>
             </div>
             <div class="confirm-text">
-                <h3>Hapus Customer?</h3>
+                <h3>Ban Customer?</h3>
                 <p>Kamu yakin ingin menghapus<br><strong>{{ $customer->name }}</strong>?<br>Tindakan ini tidak dapat dibatalkan.</p>
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn-modal-cancel" onclick="closeModal('modal-delete')">Batal</button>
-            <form action="{{ route('admin.costumer.destroy', $customer->id) }}" method="POST" style="margin: 0 !important;">
-                @csrf @method('DELETE')
-                <button type="submit" class="btn-modal-danger">Ya, Hapus</button>
+            <form action="{{ route('admin.costumer.ban', $customer->id) }}" method="POST" style="margin: 0 !important;">
+                @csrf @method('PATCH')
+                <button type="submit" class="btn-modal-danger">Ya, Ban</button>
             </form>
         </div>
     </div>

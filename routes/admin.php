@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\CostumerController;
+use App\Http\Controllers\Admin\InvoiceController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -13,6 +14,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/category/index', [CategoryController::class, 'index'])->name('category.index');
     Route::get('/vendor/index', [VendorController::class, 'index'])->name('vendor.index');
     Route::get('/costumer/index', [CostumerController::class, 'index'])->name('costumer.index');
+    Route::get('/invoice/index', [InvoiceController::class, 'index'])->name('invoice.index');
 
 
     // kelola category
@@ -36,8 +38,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/costumer/detail/{id}', [CostumerController::class, 'show'])->name('costumer.detail');
     Route::patch('/costumer/{id}/ban', [CostumerController::class, 'ban'])->name('costumer.ban');
     Route::patch('/costumer/{id}/activate', [CostumerController::class, 'activate'])->name('costumer.activate');
-    Route::delete('/costumer/{id}', [CostumerController::class, 'destroy'])->name('costumer.destroy');
 
 
-    //
+    //invoice
+    Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+    Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.detail');
 });
