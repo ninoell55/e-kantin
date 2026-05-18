@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ShopBill;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
