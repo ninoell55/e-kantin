@@ -12,7 +12,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // URL: /admin/dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/category/index', [CategoryController::class, 'index'])->name('category.index');
-    Route::get('/vendor/index', [VendorController::class, 'index'])->name('vendor.index');
+    Route::get('/vendor', [VendorController::class, 'index'])->name('vendor.index');
     Route::get('/costumer/index', [CostumerController::class, 'index'])->name('costumer.index');
     Route::get('/invoice/index', [InvoiceController::class, 'index'])->name('invoice.index');
 
