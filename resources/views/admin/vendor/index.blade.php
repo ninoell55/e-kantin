@@ -64,7 +64,7 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">Kelola Penjual</h1>
-        <p class="page-sub">Daftar semua penjual (vendor) yang terdaftar</p>
+        <p class="page-sub">Daftar semua vendor yang terdaftar</p>
     </div>
     <a href="{{ route('admin.vendor.create') }}" class="btn-primary">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
