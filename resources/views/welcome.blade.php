@@ -113,80 +113,119 @@
     <section id="menu" class="py-16 bg-[#fafafa]">
         <div class="max-w-7xl mx-auto px-6 lg:px-16">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
-                <h3 class="text-2xl font-black text-[#1f285a]">Jelajahi Menu Kami</h3>
-                <div class="flex flex-wrap gap-2 text-xs font-bold text-gray-500">
-                    <button class="px-4 py-2 bg-[#1f285a] text-white rounded-xl shadow-sm">Semua</button>
-                    <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition">Makanan</button>
-                    <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition">Camilan</button>
-                    <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl hover:bg-gray-50 transition">Minuman</button>
-                </div>
+                <h3 class="text-2xl font-black text-[#1f285a]">Jelajahi Kantin Kami</h3>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-[24px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/50 transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="bg-gray-50 rounded-2xl overflow-hidden h-44 mb-4">
-                            <img src="{{ asset('images/login.png') }}" alt="Menu" class="w-full h-full object-cover">
-                        </div>
-                        <span class="text-[10px] bg-red-50 text-[#661a15] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wide">Makanan Utama</span>
-                        <h4 class="font-extrabold text-base text-[#1f285a] mt-2 px-0.5">Nasi Ayam Saus Mentega</h4>
-                    </div>
-                    <div class="flex justify-between items-center mt-6 pt-3 border-t border-gray-50 px-0.5">
-                        <span class="font-black text-lg text-[#1f285a]">Rp 15.000</span>
-                        <button class="px-4 py-2 bg-[#1f285a] text-white text-xs font-extrabold rounded-xl hover:bg-[#661a15] transition">Pesan</button>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-[24px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/50 transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="bg-gray-50 rounded-2xl overflow-hidden h-44 mb-4">
-                            <img src="{{ asset('images/login.png') }}" alt="Menu" class="w-full h-full object-cover">
-                        </div>
-                        <span class="text-[10px] bg-amber-50 text-[#f1a80a] font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wide">Camilan</span>
-                        <h4 class="font-extrabold text-base text-[#1f285a] mt-2 px-0.5">Dimsum Ayam Kukus Segar</h4>
-                    </div>
-                    <div class="flex justify-between items-center mt-6 pt-3 border-t border-gray-50 px-0.5">
-                        <span class="font-black text-lg text-[#1f285a]">Rp 10.000</span>
-                        <button class="px-4 py-2 bg-[#1f285a] text-white text-xs font-extrabold rounded-xl hover:bg-[#661a15] transition">Pesan</button>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-[24px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/50 transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="bg-gray-50 rounded-2xl overflow-hidden h-44 mb-4">
-                            <img src="{{ asset('images/login.png') }}" alt="Menu" class="w-full h-full object-cover">
-                        </div>
-                        <span class="text-[10px] bg-blue-50 text-blue-500 font-extrabold px-2.5 py-1 rounded-lg uppercase tracking-wide">Minuman</span>
-                        <h4 class="font-extrabold text-base text-[#1f285a] mt-2 px-0.5">Es Jeruk Nipis Madu Alami</h4>
-                    </div>
-                    <div class="flex justify-between items-center mt-6 pt-3 border-t border-gray-50 px-0.5">
-                        <span class="font-black text-lg text-[#1f285a]">Rp 6.000</span>
-                        <button class="px-4 py-2 bg-[#1f285a] text-white text-xs font-extrabold rounded-xl hover:bg-[#661a15] transition">Pesan</button>
-                    </div>
-                </div>
+           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
+        <div class="bg-[#fcf4f4] rounded-[22px] overflow-hidden h-48 mb-4 relative">
+            <img src="{{ asset('images/kantin-berkah.png') }}" alt="Kantin Berkah" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="px-2 pb-2">
+            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Kantin Berkah</h4>
+            
+            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 5.000 - Rp 15.000</span>
+            
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Makanan Berat</span>
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Makanan Ringan</span>
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Minuman</span>
             </div>
         </div>
-    </section>
+    </div>
 
-    <footer id="kontak" class="bg-white border-t border-gray-100 pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-gray-100">
-            <div class="space-y-4">
-                <span class="font-extrabold text-lg text-[#1f285a]">Foo<span class="text-[#661a15]">dy</span></span>
-                <p class="text-xs text-gray-400 font-medium leading-relaxed">Platform pemesanan bekal terpercaya demi efisiensi dan kesehatan menyeluruh lingkungan sekolah.</p>
-            </div>
-            <div class="space-y-3">
-                <h6 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider">Layanan Jam Istirahat</h6>
-                <p class="text-xs text-gray-500 font-semibold">Senin - Jumat: 07:00 - 15:00 WIB</p>
-            </div>
-            <div class="space-y-3">
-                <h6 class="font-extrabold text-xs text-gray-400 uppercase tracking-wider">Akses Cepat</h6>
-                <p class="text-xs text-gray-500 font-semibold">Hubungi Teknisi Informasi Sekolah</p>
+    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
+        <div class="bg-[#fefaf0] rounded-[22px] overflow-hidden h-48 mb-4 relative">
+            <img src="{{ asset('images/warung-janti.png') }}" alt="Warung Janti" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="px-2 pb-2">
+            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Warung Bu Janti</h4>
+            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 3.000 - Rp 10.000</span>
+            
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Gorengan</span>
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Snack</span>
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Minuman Dingin</span>
             </div>
         </div>
-        <div class="text-center pt-8 text-xs text-gray-400 font-medium">
-            &copy; 2026 Kantin Digital SMK. Hak Cipta Dilindungi Undang-Undang.
+    </div>
+
+    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
+        <div class="bg-[#f4f6fa] rounded-[22px] overflow-hidden h-48 mb-4 relative">
+            <img src="{{ asset('images/kantin-sehat.png') }}" alt="Kantin Sehat" class="w-full h-full object-cover">
         </div>
-    </footer>
+        
+        <div class="px-2 pb-2">
+            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Jajanan Sehat</h4>
+            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 4.000 - Rp 12.000</span>
+            
+            <div class="flex flex-wrap gap-2">
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Aneka Jus</span>
+                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Salad Buah</span>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+   <footer id="kontak" class="bg-[#1f285a] text-white pt-16 pb-8 border-t border-navy-900/20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 border-b border-white/10">
+        
+        <div class="space-y-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-[#661a15] flex items-center justify-center font-black text-sm text-[#f1a80a]">F</div>
+                <span class="font-black text-xl tracking-tight text-white">Foo<span class="text-[#f1a80a]">dy</span></span>
+            </div>
+            <p class="text-xs text-slate-300/80 font-medium leading-relaxed max-w-sm">
+                Platform digital kantin sekolah terpercaya demi efisiensi waktu istirahat dan pemantauan gizi sehat menyeluruh bagi siswa.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <h6 class="font-extrabold text-xs text-[#f1a80a] uppercase tracking-widest">Jam Operasional</h6>
+            <div class="space-y-2">
+                <p class="text-sm font-bold text-white">Senin - Jumat</p>
+                <p class="text-xs text-slate-300/80 font-medium">07:00 - 15:00 WIB</p>
+                <p class="text-xs text-slate-400 font-medium italic mt-1">*Mengikuti jam istirahat sekolah</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <h6 class="font-extrabold text-xs text-[#f1a80a] uppercase tracking-widest">Bantuan & Akses</h6>
+            <ul class="space-y-2.5 text-xs font-semibold text-slate-300/90">
+                <li>
+                    <a href="#menu" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
+                        Jelajahi Daftar Kantin
+                    </a>
+                </li>
+                <li>
+                    <a href="#tentang" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
+                        Tentang Layanan Kami
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
+                        Hubungi IT Support Sekolah
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto px-6 lg:px-16 pt-8 text-xs text-slate-400 font-medium gap-4">
+        <div>
+            &copy; 2026 <span class="text-white font-bold">Foody Kantin Digital</span>. Hak Cipta Dilindungi Undang-Undang.
+        </div>
+        <div class="flex gap-4 text-slate-400/60">
+            <span class="text-[10px] uppercase tracking-wider bg-white/5 px-2.5 py-1 rounded-md text-slate-300">v1.0-Beta</span>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>
