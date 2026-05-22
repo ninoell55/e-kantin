@@ -18,16 +18,16 @@ class DashboardController extends Controller
         $totalPengguna = User::where('role', 'customer')->count();
         $totalPenjual  = User::where('role', 'vendor')->count();
         $totalTagihan  = ShopBill::where('status', 'paid')
-                            ->whereMonth('paid_at', now()->month)
-                            ->whereYear('paid_at', now()->year)
-                            ->sum('amount');
+            ->whereMonth('paid_at', now()->month)
+            ->whereYear('paid_at', now()->year)
+            ->sum('amount');
 
         // Status pembayaran donut
         $paidCount    = ShopBill::where('status', 'paid')->count();
         $unpaidCount  = ShopBill::where('status', 'unpaid')
-                            ->where('due_date', '>=', now())->count();
+            ->where('due_date', '>=', now())->count();
         $overdueCount = ShopBill::where('status', 'unpaid')
-                            ->where('due_date', '<', now())->count();
+            ->where('due_date', '<', now())->count();
 
         // Chart bulanan (12 bulan tahun ini)
         $monthlyRevenue = [];
@@ -47,7 +47,7 @@ class DashboardController extends Controller
 
         // Notifikasi: vendor overdue
         $overdueVendors = User::where('role', 'vendor')
-            ->whereHas('shop.bills', function($q) {
+            ->whereHas('shop.bills', function ($q) {
                 $q->where('status', 'unpaid')->where('due_date', '<', now());
             })
             ->with('shop')
@@ -65,20 +65,27 @@ class DashboardController extends Controller
 
         // Ringkasan bulan ini
         $targetSewa      = ShopBill::whereMonth('due_date', now()->month)
-                               ->whereYear('due_date', now()->year)
-                               ->sum('amount');
+            ->whereYear('due_date', now()->year)
+            ->sum('amount');
         $menungguTagihan = ShopBill::where('status', 'unpaid')
-                               ->whereMonth('due_date', now()->month)
-                               ->whereYear('due_date', now()->year)
-                               ->sum('amount');
+            ->whereMonth('due_date', now()->month)
+            ->whereYear('due_date', now()->year)
+            ->sum('amount');
 
         return view('admin.dashboard', compact(
-            'totalKategori', 'totalPengguna', 'totalPenjual', 'totalTagihan',
-            'paidCount', 'unpaidCount', 'overdueCount',
+            'totalKategori',
+            'totalPengguna',
+            'totalPenjual',
+            'totalTagihan',
+            'paidCount',
+            'unpaidCount',
+            'overdueCount',
             'monthlyRevenue',
             'vendors',
-            'overdueVendors', 'recentPaid',
-            'targetSewa', 'menungguTagihan'
+            'overdueVendors',
+            'recentPaid',
+            'targetSewa',
+            'menungguTagihan'
         ));
     }
 }

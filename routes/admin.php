@@ -31,6 +31,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/vendor/{id}', [VendorController::class, 'update'])->name('vendor.update');
     Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendor.destroy');
     Route::patch('/vendor/{id}/activate', [VendorController::class, 'activate'])->name('vendor.activate');
+    Route::patch('/vendor/{id}/suspend', [VendorController::class, 'suspend'])->name('vendor.suspend');
+    Route::patch('/vendor/{id}/unsuspend', [VendorController::class, 'unsuspend'])->name('vendor.unsuspend');
 
     //costumer
     Route::get('/costumer/create', [CostumerController::class, 'create'])->name('costumer.create');

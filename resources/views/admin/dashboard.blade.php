@@ -238,7 +238,7 @@
     {{-- CHART --}}
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Pemasukan Sewa per Bulan</span>
+            <span class="card-title">Pemasukan Sewa Bulanan</span>
             <span style="font-size:12px !important; color:var(--gray-400) !important;">{{ now()->year }}</span>
         </div>
         <div class="card-body">
