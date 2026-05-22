@@ -125,6 +125,7 @@ class VendorController extends Controller
             'payment_method' => 'required',
             'payment_proof'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'shop_logo'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'status' => 'nullable|in:active,banned',
         ], [
             'name.unique'      => 'Nama pemilik sudah digunakan.',
             'shop_name.unique' => 'Nama warung sudah digunakan.',
@@ -140,6 +141,7 @@ class VendorController extends Controller
                 'name'  => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'status' => $request->status ?? $seller->status,
             ];
             if ($request->filled('password')) {
                 $data['password'] = Hash::make($request->password);
@@ -218,5 +220,20 @@ class VendorController extends Controller
         $user->update(['status' => 'active']);
 
         return redirect()->back()->with('success', 'Pembayaran diterima! Akun penjual sekarang aktif.');
+    }
+    public function suspend($id)
+    {
+        $vendor = User::where('role', 'vendor')->findOrFail($id);
+        $vendor->update(['status' => 'banned']);
+
+        return redirect()->back()->with('success', 'Akun vendor berhasil dinonaktifkan.');
+    }
+
+    public function unsuspend($id)
+    {
+        $vendor = User::where('role', 'vendor')->findOrFail($id);
+        $vendor->update(['status' => 'active']);
+
+        return redirect()->back()->with('success', 'Akun vendor berhasil diaktifkan kembali.');
     }
 }

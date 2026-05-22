@@ -29,8 +29,10 @@
     .btn-action { display: inline-flex !important; align-items: center !important; gap: 5px !important; padding: 6px 12px !important; border-radius: 8px !important; font-size: 12px !important; font-weight: 500 !important; border: none !important; cursor: pointer !important; font-family: var(--font) !important; text-decoration: none !important; transition: opacity 0.15s !important; }
     .btn-action:hover { opacity: 0.85 !important; }
     .btn-action svg { width: 13px !important; height: 13px !important; }
-    .btn-edit { background: #e8eeff !important; color: #3d4fd6 !important; }
-    .btn-delete { background: #fef2f2 !important; color: #dc2626 !important; }
+    .btn-edit     { background: #e8eeff !important; color: #3d4fd6 !important; }
+    .btn-delete   { background: #fef2f2 !important; color: #dc2626 !important; }
+    .btn-ban      { background: #fff7e6 !important; color: #d97706 !important; }
+    .btn-activate { background: #e6f7ee !important; color: #15803d !important; }
     .td-empty { text-align: center !important; padding: 48px !important; color: var(--gray-400) !important; font-size: 14px !important; }
     .td-empty svg { width: 36px !important; height: 36px !important; display: block !important; margin: 0 auto 12px !important; opacity: 0.35 !important; }
 
@@ -42,7 +44,6 @@
     .modal-close svg { width: 20px !important; height: 20px !important; }
     .modal-body { padding: 24px !important; }
     .modal-footer { display: flex !important; justify-content: flex-end !important; gap: 10px !important; padding: 16px 24px !important; border-top: 1px solid #f0f1f5 !important; }
-
     .confirm-icon { width: 52px !important; height: 52px !important; border-radius: 50% !important; background: #fef2f2 !important; display: flex !important; align-items: center !important; justify-content: center !important; margin: 0 auto 16px !important; }
     .confirm-icon svg { width: 26px !important; height: 26px !important; color: #dc2626 !important; }
     .confirm-text { text-align: center !important; }
@@ -84,7 +85,7 @@
                 <th class="center">Status</th>
                 <th class="center">Sewa</th>
                 <th class="center">Bergabung</th>
-                <th class="center" style="width:140px">Aksi</th>
+                <th class="center" style="width:200px">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -97,7 +98,11 @@
                 </td>
                 <td class="center td-muted">{{ $seller->email }}</td>
                 <td class="center">
-                    <span class="status-pill status-active">AKTIF</span>
+                    @if($seller->status === 'active')
+                        <span class="status-pill status-active">AKTIF</span>
+                    @else
+                        <span class="status-pill status-inactive">NONAKTIF</span>
+                    @endif
                 </td>
                 <td class="center td-muted">Rp {{ number_format($seller->shop->currentBill->amount ?? 0, 0, ',', '.') }}</td>
                 <td class="center td-muted">{{ \Carbon\Carbon::parse($seller->created_at)->translatedFormat('d M Y') }}</td>
@@ -109,6 +114,31 @@
                             </svg>
                             Edit
                         </a>
+
+                        @if($seller->status === 'banned')
+                            <form action="{{ route('admin.vendor.unsuspend', $seller->id) }}" method="POST" style="margin:0;">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="btn-action btn-activate">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                    Aktifkan
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('admin.vendor.suspend', $seller->id) }}" method="POST" style="margin:0;"
+                                onsubmit="return confirm('Nonaktifkan akun {{ $seller->name }}?')">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="btn-action btn-ban">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                                    </svg>
+                                    Nonaktifkan
+                                </button>
+                            </form>
+                        @endif
+
                         <button class="btn-action btn-delete"
                             data-id="{{ $seller->id }}"
                             data-name="{{ $seller->name }}"
