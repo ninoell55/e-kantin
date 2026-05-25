@@ -30,4 +30,18 @@ class InvoiceController extends Controller
 
         return view('admin.invoice.detail', compact('bill', 'status', 'invoiceNumber'));
     }
+    public function confirmPayment($id)
+    {
+        $bill = ShopBill::findOrFail($id);
+
+        $paidAt = now();
+
+        $bill->update([
+            'status'   => 'paid',
+            'paid_at'  => $paidAt,
+            'due_date' => $paidAt->copy()->addDays(30),
+        ]);
+
+        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi.');
+    }
 }
