@@ -24,6 +24,7 @@
                 </div>
                 @endif
 
+                {{-- PILIH WARUNG --}}
                 <div class="inv-form-group">
                     <label class="inv-label">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -33,12 +34,11 @@
                         </svg>
                         Pilih Warung <span class="inv-required">*</span>
                     </label>
-                    <select name="shop_id" id="inv-shop-id" class="inv-select" required onchange="fillAmount(this)">
+                    <select name="shop_id" id="inv-shop-id" class="inv-select" required>
                         <option value="">-- Pilih warung vendor --</option>
                         @foreach($vendors ?? [] as $vendor)
                             @if($vendor->shop)
                             <option value="{{ $vendor->shop->id }}"
-                                data-amount="{{ $vendor->shop->currentBill->amount ?? 0 }}"
                                 {{ old('_form') === 'create-invoice' && old('shop_id') == $vendor->shop->id ? 'selected' : '' }}>
                                 {{ $vendor->shop->name }} — {{ $vendor->name }}
                             </option>
@@ -48,31 +48,38 @@
                     <p class="inv-hint">Pilih warung yang melakukan pembayaran tunai.</p>
                 </div>
 
+                {{-- JUMLAH BULAN --}}
                 <div class="inv-form-group">
                     <label class="inv-label">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="1" x2="12" y2="23"/>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
                         </svg>
-                        Nominal Pembayaran (Rp) <span class="inv-required">*</span>
+                        Jumlah Bulan <span class="inv-required">*</span>
                     </label>
-                    <div class="inv-input-wrap">
-                        <span class="inv-prefix">Rp</span>
-                        <input type="number" name="amount" id="inv-amount"
-                            class="inv-input"
-                            value="{{ old('_form') === 'create-invoice' ? old('amount') : '' }}"
-                            placeholder="0" min="1000" required>
-                    </div>
-                    <p class="inv-hint">Nominal akan otomatis terisi dari tagihan terakhir vendor.</p>
+                    <select name="months" id="inv-months" class="inv-select" required onchange="updateTotal()">
+                        @for($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}" {{ old('months', 1) == $i ? 'selected' : '' }}>
+                                {{ $i }} Bulan
+                            </option>
+                        @endfor
+                    </select>
+                    <p class="inv-hint" id="inv-total-hint">Total: Rp 750.000 (1 bulan × Rp 750.000)</p>
                 </div>
 
+                {{-- INFO BOX --}}
                 <div class="inv-info-box">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
                     </svg>
                     <div>
                         <strong>Pembayaran Tunai (Cash)</strong><br>
-                        Invoice akan langsung berstatus <strong>PAID</strong> dan dicatat pada bulan {{ now()->translatedFormat('F Y') }}.
+                        Invoice akan langsung berstatus <strong>PAID</strong> dan dicatat mulai bulan {{ now()->translatedFormat('F Y') }}.
+                        Biaya sewa <strong>Rp 750.000/bulan</strong>.
                     </div>
                 </div>
 
@@ -98,10 +105,6 @@
     .inv-required { color: #dc2626 !important; }
     .inv-select { width: 100% !important; padding: 11px 14px !important; border: 1.5px solid #e8eaf0 !important; border-radius: 10px !important; font-family: var(--font) !important; font-size: 14px !important; color: var(--navy) !important; outline: none !important; background: #fff !important; transition: border-color 0.15s !important; }
     .inv-select:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(61,79,214,0.08) !important; }
-    .inv-input-wrap { position: relative !important; display: flex !important; align-items: center !important; }
-    .inv-prefix { position: absolute !important; left: 14px !important; font-size: 14px !important; font-weight: 600 !important; color: var(--gray-400) !important; pointer-events: none !important; }
-    .inv-input { width: 100% !important; padding: 11px 14px 11px 40px !important; border: 1.5px solid #e8eaf0 !important; border-radius: 10px !important; font-family: var(--font) !important; font-size: 14px !important; color: var(--navy) !important; outline: none !important; background: #fff !important; transition: border-color 0.15s !important; }
-    .inv-input:focus { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(61,79,214,0.08) !important; }
     .inv-hint { font-size: 12px !important; color: var(--gray-400) !important; margin-top: 5px !important; }
     .inv-info-box { display: flex !important; gap: 10px !important; padding: 12px 14px !important; background: #e6f7ee !important; border-radius: 10px !important; border: 1px solid #bbf7d0 !important; font-size: 12px !important; color: #15803d !important; line-height: 1.5 !important; margin-top: 4px !important; }
     .inv-info-box svg { width: 16px !important; height: 16px !important; flex-shrink: 0 !important; margin-top: 1px !important; }
@@ -112,3 +115,18 @@
     .inv-btn-submit:hover { opacity: 0.88 !important; }
     .inv-btn-submit svg { width: 15px !important; height: 15px !important; }
 </style>
+
+<script>
+    const ratePerMonth = 750000;
+
+    function updateTotal() {
+        const months = parseInt(document.getElementById('inv-months').value);
+        const total  = ratePerMonth * months;
+        document.getElementById('inv-total-hint').textContent =
+            'Total: Rp ' + total.toLocaleString('id-ID') + ' (' + months + ' bulan × Rp 750.000)';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateTotal();
+    });
+</script>
