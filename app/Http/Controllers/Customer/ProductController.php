@@ -10,8 +10,7 @@ class ProductController extends Controller
 {
     //menampilkan daftar produk customer
     public function index(){
-        //ambil produk yg tersedia
-        $products = Product::where('is_available',true)->get();
-        return view('customer.products.index', compact('products'));
+        $products= Product::with('shop')->get();
+        return view('layouts.navigation.customer.menu',compact('products'));
     }
 }

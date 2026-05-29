@@ -48,6 +48,7 @@ class CheckoutController extends Controller
             'shop_id'=>reset($cart)['shop_id'],
             'total_price'=>$total,
             'payment_method'=>$request->payment_method,
+            'order_type'=>$request->order_type,
             'payment_status'=>'unpaid',
             'status'=>'pending',
             'notes'=>$request->notes,
@@ -67,7 +68,7 @@ class CheckoutController extends Controller
         session()->forget('cart');
         //redirect
         return redirect()
-        ->route('customer.cart.index')
+        ->route('customer2.cart.index')
         ->with('success', 'pesanan berhasil dibuat');
     }
 }

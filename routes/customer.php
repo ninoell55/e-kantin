@@ -5,6 +5,7 @@ use App\Http\Controllers\Customer\DashboardController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\CheckoutController;
+use App\Http\Controllers\Customer\ShopController;
 
 Route::middleware(['auth', 'role:customer'])
 ->prefix('customer')->name('customer.')->group(function () {
@@ -12,8 +13,8 @@ Route::middleware(['auth', 'role:customer'])
 });
 
 Route::middleware(['auth'])
-->prefix('customer')
-->name('customer.')
+->prefix('customer2')
+->name('customer2.')
 ->group(function(){
 
 //halaman checkout
@@ -70,6 +71,8 @@ Route::middleware(['auth', 'role:customer'])
             ->name('dashboard');
 
 Route::view('/menu', 'layouts.navigation.customer.menu')
+    ->name('menu');
+    Route::get('/menu', [ShopController::class, 'index'])
     ->name('menu');
 
 Route::view('/cart', 'layouts.navigation.customer.cart')

@@ -31,7 +31,7 @@
     </div>
 
 
-    <form action="{{ route('customer.checkout.store') }}" method="POST">
+    <form action="{{ route('customer2.checkout.store') }}" method="POST">
         @csrf
         
         <div>

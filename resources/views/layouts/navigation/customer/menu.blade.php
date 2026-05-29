@@ -1,6 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <style>
+    html{
+      scroll-behavior: smooth;
+    }
+  </style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E-Kantin SMEA</title>
@@ -77,7 +83,37 @@
 
     <div class="flex gap-4 overflow-x-auto no-scrollbar px-4 md:px-10 pb-3">
 
-      <!-- Stand 1 - Buka -->
+    @foreach ($shops as $shop )
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-60 md:w-72 active:scale-95 transition-transform">
+        <div class="h-36 md:h-44 overflow-hidden relative">
+          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop" alt="Stand Bu Rina" class="w-full h-full object-cover">
+         
+          @if ($shop->is_open==1)
+          <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">● Buka</span>
+          @else
+          <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">X&nbsp;&nbsp; Tutup</span>
+          @endif
+          
+
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-dark text-sm mb-1">{{ $shop->name }}</h3>
+          <p class="text-gray-400 text-xs leading-relaxed mb-3">{{ $shop->description }}</p>
+          <div class="flex gap-1.5 flex-wrap mb-3">
+            <span class="bg-slate-100 text-dark text-xs px-2.5 py-1 rounded-full">🍜 Mie</span>
+            <span class="bg-slate-100 text-dark text-xs px-2.5 py-1 rounded-full">🍲 Bakso</span>
+            <span class="bg-slate-100 text-dark text-xs px-2.5 py-1 rounded-full">🥤 Es</span>
+          </div>
+           @if ($shop->is_open==1)
+          <a href="#menu-grid"><button class="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-semibold">Lihat Menu</button></a>
+          @else
+          <button disabled class="w-full bg-gray-100 text-gray-400 py-2.5 rounded-xl text-xs font-semibold cursor-not-allowed">Sedang Tutup</button>
+          @endif
+        </div>
+      </div>
+    @endforeach
+
+      <!-- //Stand 1 - Buka 
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-60 md:w-72 active:scale-95 transition-transform">
         <div class="h-36 md:h-44 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop" alt="Stand Bu Rina" class="w-full h-full object-cover">
@@ -95,7 +131,7 @@
         </div>
       </div>
 
-      <!-- Stand 2 - Tutup -->
+       //Stand 2 - Tutup
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-60 md:w-72 opacity-75">
         <div class="h-36 md:h-44 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop" alt="Stand Minuman" class="w-full h-full object-cover grayscale">
@@ -112,7 +148,7 @@
         </div>
       </div>
 
-      <!-- Stand 3 - Buka -->
+      // Stand 3 - Buka
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-60 md:w-72 active:scale-95 transition-transform">
         <div class="h-36 md:h-44 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=800&auto=format&fit=crop" alt="Stand Pak Joko" class="w-full h-full object-cover">
@@ -130,7 +166,7 @@
         </div>
       </div>
 
-      <!-- Stand 4 - Buka -->
+      // Stand 4 - Buka
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-60 md:w-72 active:scale-95 transition-transform">
         <div class="h-36 md:h-44 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800&auto=format&fit=crop" alt="Stand Bu Sari" class="w-full h-full object-cover">
@@ -145,8 +181,7 @@
           </div>
           <button class="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-semibold">Lihat Menu</button>
         </div>
-      </div>
-
+      </div>-->
     </div>
   </div>
 
@@ -160,12 +195,35 @@
   </div>
 
   <!-- Menu Grid -->
-  <div class="px-4 md:px-10 pb-28">
+  <div class="px-4 md:px-10 pb-28" id="menu-grid">
     <h2 class="text-primary font-bold text-base md:text-xl mb-4">Menu Tersedia</h2>
 
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
 
-      <!-- Card 1 -->
+    @foreach ($products as $product)
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
+        <div class="h-32 md:h-44 overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=600&auto=format&fit=crop" alt="Mie Ayam" class="w-full h-full object-cover">
+        </div>
+        <div class="p-3 md:p-5">
+          <span class="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">{{$product->category->name}}</span>
+          <h3 class="font-semibold text-dark text-sm mt-1.5 mb-0.5">{{ $product->name }}</h3>
+          <p class="text-secondary font-bold text-base md:text-xl mb-0.5">RP {{ $product->price }}</p>
+          <p class="text-gray-400 text-xs mb-3">{{ $product->shop->name }}</p>
+          <div class="flex justify-between items-center">
+            @if ($product->is_available && $product->shop->is_open)
+            <span class="text-green-600 font-semibold text-xs">● Ada</span>
+            <button class="bg-primary text-white px-3 py-1.5 rounded-xl text-xs font-semibold">+ Pesan</button>
+            @else
+            <span class="text-red-600 font-semibold text-xs">X &nbsp; &nbsp; Tidak ada</span>
+            <button disabled class="bg-gray-100 text-gray-400 px-3 py-1.5 rounded-xl text-xs font-semibold cursor-not-allowed">Tidak ada</button>
+            @endif
+            
+          </div>
+        </div>
+      </div>
+    @endforeach
+      <!-- Card 1 
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=600&auto=format&fit=crop" alt="Mie Ayam" class="w-full h-full object-cover">
@@ -182,7 +240,7 @@
         </div>
       </div>
 
-      <!-- Card 2 -->
+       Card 2
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop" alt="Burger" class="w-full h-full object-cover">
@@ -199,7 +257,7 @@
         </div>
       </div>
 
-      <!-- Card 3 -->
+      Card 3
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=600&auto=format&fit=crop" alt="Minuman" class="w-full h-full object-cover">
@@ -216,7 +274,7 @@
         </div>
       </div>
 
-      <!-- Card 4 -->
+      Card 4 
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=600&auto=format&fit=crop" alt="Nasi Goreng" class="w-full h-full object-cover">
@@ -233,7 +291,7 @@
         </div>
       </div>
 
-      <!-- Card 5 -->
+       Card 5 
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=600&auto=format&fit=crop" alt="Bakso" class="w-full h-full object-cover">
@@ -250,7 +308,7 @@
         </div>
       </div>
 
-      <!-- Card 6 -->
+       Card 6
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm active:scale-95 md:hover:-translate-y-1.5 md:hover:shadow-md transition-all">
         <div class="h-32 md:h-44 overflow-hidden">
           <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=600&auto=format&fit=crop" alt="Thai Tea" class="w-full h-full object-cover">
@@ -269,6 +327,7 @@
 
     </div>
   </div>
+-->
 
   <!-- Floating Cart -->
 <a href="{{ route('customer.cart') }}">

@@ -20,7 +20,7 @@
             RP {{ number_format($item['price']) }}
         </p>
         <p>
-               <form action="{{ route('customer.cart.add', $item['product_id']) }}"
+               <form action="{{ route('customer2.cart.add', $item['product_id']) }}"
         method="POST">
         @csrf
         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">
@@ -29,7 +29,7 @@
             </form>
             Quantity:
             {{ $item['quantity'] }}
-              <form action="{{ route('customer.cart.decrease', $item['product_id']) }}"
+              <form action="{{ route('customer2.cart.decrease', $item['product_id']) }}"
         method="POST">
         @csrf
         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded">
@@ -58,7 +58,7 @@
         RP {{ number_format($total) }}
     </h2>
 
-    <a href="{{ route('customer.checkout.index') }}">
+    <a href="{{ route('customer2.checkout.index') }}">
         check out
     </a>
 </div>
