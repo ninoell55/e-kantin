@@ -11,14 +11,19 @@ use Illuminate\Http\Request;
 class CashPaymentController extends Controller
 {
     public function index()
-    {
-        $vendors = User::where('role', 'vendor')
-            ->where('status', 'active')
-            ->with('shop')
-            ->get();
+{
+    $bills = ShopBill::with(['shop.user'])
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->groupBy('shop_id');
 
-        return view('admin.cash-payment.index', compact('vendors'));
-    }
+    $vendors = User::where('role', 'vendor')
+        ->where('status', 'active')
+        ->with(['shop.currentBill'])
+        ->get();
+
+    return view('admin.invoice.index', compact('bills', 'vendors'));
+}
 
     public function store(Request $request)
     {
@@ -34,7 +39,7 @@ class CashPaymentController extends Controller
         ]);
 
         $paidAt = now();
-
+    
         ShopBill::create([
             'shop_id'        => $request->shop_id,
             'amount'         => $request->amount,
@@ -45,6 +50,8 @@ class CashPaymentController extends Controller
             'paid_at'        => $paidAt,
             'payment_method' => 'cash',
             'payment_proof'  => null,
+
+        
         ]);
 
         return redirect()->route('admin.cash-payment.index')
