@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShopBill;
+use App\Models\User;
 use Carbon\Carbon;
 
 class InvoiceController extends Controller
@@ -15,8 +16,15 @@ class InvoiceController extends Controller
             ->get()
             ->groupBy('shop_id');
 
-        return view('admin.invoice.index', compact('bills'));
+        // Tambahan: untuk dropdown di modal catat pembayaran
+        $vendors = User::where('role', 'vendor')
+            ->where('status', 'active')
+            ->with(['shop.currentBill'])
+            ->get();
+
+        return view('admin.invoice.index', compact('bills', 'vendors'));
     }
+
     public function show($id)
     {
         $bill = ShopBill::with('shop.user')->findOrFail($id);
@@ -27,15 +35,13 @@ class InvoiceController extends Controller
         }
 
         $invoiceNumber = 'INV-' . str_pad($bill->id, 4, '0', STR_PAD_LEFT) . '-' . $bill->year;
-
         return view('admin.invoice.detail', compact('bill', 'status', 'invoiceNumber'));
     }
+
     public function confirmPayment($id)
     {
         $bill = ShopBill::findOrFail($id);
-
         $paidAt = now();
-
         $bill->update([
             'status'   => 'paid',
             'paid_at'  => $paidAt,

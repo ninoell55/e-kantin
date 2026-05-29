@@ -51,7 +51,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 
     //cash payment
-    Route::post('/cash-payment', [CashPaymentController::class, 'store'])->name('cash-payment.store');
+   Route::post('/cash-payment', [CashPaymentController::class, 'store'])->name('cash-payment.store');
 
 
 
