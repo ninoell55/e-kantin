@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\CostumerController;
 use App\Http\Controllers\Admin\InvoiceController;
+use App\Http\Controllers\Admin\CashPaymentController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -15,6 +16,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/vendor', [VendorController::class, 'index'])->name('vendor.index');
     Route::get('/costumer/index', [CostumerController::class, 'index'])->name('costumer.index');
     Route::get('/invoice/index', [InvoiceController::class, 'index'])->name('invoice.index');
+    Route::get('/cash-payment', [CashPaymentController::class, 'index'])->name('cash-payment.index');
 
 
     // kelola category
@@ -31,6 +33,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/vendor/{id}', [VendorController::class, 'update'])->name('vendor.update');
     Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendor.destroy');
     Route::patch('/vendor/{id}/activate', [VendorController::class, 'activate'])->name('vendor.activate');
+    Route::patch('/vendor/{id}/suspend', [VendorController::class, 'suspend'])->name('vendor.suspend');
+    Route::patch('/vendor/{id}/unsuspend', [VendorController::class, 'unsuspend'])->name('vendor.unsuspend');
 
     //costumer
     Route::get('/costumer/create', [CostumerController::class, 'create'])->name('costumer.create');
@@ -43,4 +47,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     //invoice
     Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
     Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.detail');
+    Route::patch('/invoice/{id}/confirm', [InvoiceController::class, 'confirmPayment'])->name('invoice.confirm');
+
+
+    //cash payment
+   Route::post('/cash-payment', [CashPaymentController::class, 'store'])->name('cash-payment.store');
+
+
+
+
+
 });
