@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\Shop;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
@@ -15,571 +16,155 @@ class ProductSeeder extends Seeder
 
     public function run(): void
     {
-        $shop1 = Shop::where('name', 'Warung Lestari')->first();
-        $shop2 = Shop::where('name', 'Dapur SMK')->first();
+        // 1. Ambil semua ID lapak/warung yang tersedia
+        $shopIds = Shop::pluck('id')->toArray();
 
-        $makanan = Category::where('name', 'Makanan')->first();
-        $minuman = Category::where('name', 'Minuman')->first();
-        $snack   = Category::where('name', 'Snack')->first();
-        $paket   = Category::where('name', 'Paket Hemat')->first();
+        if (empty($shopIds)) {
+            $this->command->error('Data Shop tidak ditemukan! Jalankan UserSeeder terlebih dahulu.');
+            return;
+        }
 
-        // ── PRODUK WARUNG LESTARI (shop1) ─────────────────────────────
-        $products1 = [
+        // 2. Tentukan path folder sumber gambar mentah
+        $sourcePath = public_path('asset/img');
 
-            // MAKANAN
-            [
-                'name'        => 'Nasi Goreng',
-                'slug'        => 'nasi-goreng',
-                'description' => 'Nasi goreng spesial dengan telur, ayam, dan sayuran segar.',
-                'price'       => 17000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/NasiGoreng.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Ayam Geprek',
-                'slug'        => 'ayam-geprek',
-                'description' => 'Ayam geprek crispy dengan sambal pedas khas.',
-                'price'       => 18000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/AyamGeprek.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Mie Ayam Ceker Bakso',
-                'slug'        => 'mie-ayam-ceker-bakso',
-                'description' => 'Mie ayam dengan ceker empuk dan bakso kenyal.',
-                'price'       => 16000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/MieAyamCekerBakso.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Bakso Bakar',
-                'slug'        => 'bakso-bakar',
-                'description' => 'Bakso bakar bumbu kecap manis dengan tusukan.',
-                'price'       => 8000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/BaksoBakar.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Dimsum Ayam',
-                'slug'        => 'dimsum-ayam',
-                'description' => 'Dimsum ayam kukus dengan saus tiram.',
-                'price'       => 12000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/DimsumAyam.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Risoles Ayam',
-                'slug'        => 'risoles-ayam',
-                'description' => 'Risoles isi ayam dan sayuran, digoreng garing.',
-                'price'       => 5000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/RisolesAyam.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Roti Sosis',
-                'slug'        => 'roti-sosis',
-                'description' => 'Roti empuk dengan isian sosis dan saus.',
-                'price'       => 7000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/RotiSosis.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Sosis Telur',
-                'slug'        => 'sosis-telur',
-                'description' => 'Sosis dimasak dengan telur, cocok untuk sarapan.',
-                'price'       => 9000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/SosisTelur.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Sosis Bakar Mayonais',
-                'slug'        => 'sosis-bakar-mayonais',
-                'description' => 'Sosis bakar gurih dengan taburan mayonais.',
-                'price'       => 10000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/SosisBakarMayonais.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Nugget Ayam',
-                'slug'        => 'nugget-ayam',
-                'description' => 'Nugget ayam crispy siap makan.',
-                'price'       => 10000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/NuggetAyam.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Takoyaki',
-                'slug'        => 'takoyaki',
-                'description' => 'Takoyaki bola gurita khas Jepang dengan saus okonomiyaki.',
-                'price'       => 13000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/Takoyaki.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Sushi Gulung',
-                'slug'        => 'sushi-gulung',
-                'description' => 'Sushi gulung nori dengan isian sayuran segar.',
-                'price'       => 15000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/SushiGulung.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Chicken Cordon Bleu',
-                'slug'        => 'chicken-cordon-bleu',
-                'description' => 'Ayam isi keju dan ham dibalut tepung renyah.',
-                'price'       => 20000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/ChickenCordonBleu.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Chikuwa',
-                'slug'        => 'chikuwa',
-                'description' => 'Chikuwa ikan khas Jepang yang kenyal dan gurih.',
-                'price'       => 8000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/Chikuwa.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Sandwich Croissant',
-                'slug'        => 'sandwich-croissant',
-                'description' => 'Croissant lapis dengan sayuran, keju, dan saus.',
-                'price'       => 18000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/Sandwich Croissant.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Pizza Pepperoni',
-                'slug'        => 'pizza-pepperoni',
-                'description' => 'Pizza mini topping pepperoni dengan saus tomat.',
-                'price'       => 22000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/PizzaPepperoni .jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Martabak Manis Mini',
-                'slug'        => 'martabak-manis-mini',
-                'description' => 'Martabak manis mini dengan isian coklat dan keju.',
-                'price'       => 12000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/MartabakManisMini.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Pisang Goreng Coklat',
-                'slug'        => 'pisang-goreng-coklat',
-                'description' => 'Pisang goreng crispy dengan topping coklat leleh.',
-                'price'       => 8000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/PisangGorengCoklat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Kentang Goreng',
-                'slug'        => 'kentang-goreng',
-                'description' => 'Kentang goreng renyah dengan pilihan saus sambal.',
-                'price'       => 10000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/KentangGoreng.jpg',
-                'is_available'=> true,
-            ],
+        // Tentukan folder tujuan di dalam Storage
+        $targetStoragePath = storage_path('app/public/products');
 
-            // MINUMAN
-            [
-                'name'        => 'Es Teh Manis',
-                'slug'        => 'es-teh-manis',
-                'description' => 'Es teh manis segar untuk menemani istirahat.',
-                'price'       => 5000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/EsTehManis.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Es Tea Jus',
-                'slug'        => 'es-tea-jus',
-                'description' => 'Perpaduan teh segar dengan sari buah.',
-                'price'       => 8000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/EsTeajus.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Es Cappuccino Cincau',
-                'slug'        => 'es-cappuccino-cincau',
-                'description' => 'Cappuccino dingin dengan cincau hitam segar.',
-                'price'       => 10000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/EsCappuccinoCincau.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Iced Mocha',
-                'slug'        => 'iced-mocha',
-                'description' => 'Kopi mocha dingin yang creamy dan manis.',
-                'price'       => 12000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/Iced Mocha.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Jus Alpukat',
-                'slug'        => 'jus-alpukat',
-                'description' => 'Jus alpukat segar dengan susu dan sirup coklat.',
-                'price'       => 13000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/JusAlpukat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Bubble Tea Gula Merah',
-                'slug'        => 'bubble-tea-gula-merah',
-                'description' => 'Bubble tea dengan sirup gula merah dan pearl tapioka.',
-                'price'       => 15000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/BubbleTeaGulaMerah.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Ultra Milk Rasa Coklat',
-                'slug'        => 'ultra-milk-rasa-coklat',
-                'description' => 'Susu UHT coklat kemasan siap minum.',
-                'price'       => 6000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/UltraMilkRasaCoklat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Miliku Cokelat Premium',
-                'slug'        => 'miliku-cokelat-premium',
-                'description' => 'Susu coklat premium dengan rasa yang kaya.',
-                'price'       => 7000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/MilikuCokelatPremium.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Nobo Oat Milk Creamy Classic',
-                'slug'        => 'nobo-oat-milk-creamy-classic',
-                'description' => 'Minuman oat milk creamy tanpa laktosa.',
-                'price'       => 9000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/NoboOatMilkCreamyClassic.jpg',
-                'is_available'=> true,
-            ],
+        // Pastikan folder target di storage sudah terbentuk
+        if (!File::exists($targetStoragePath)) {
+            File::makeDirectory($targetStoragePath, 0755, true, true);
+        }
 
-            // SNACK
-            [
-                'name'        => 'Donat Coklat',
-                'slug'        => 'donat-coklat',
-                'description' => 'Donat empuk dengan topping coklat leleh.',
-                'price'       => 6000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/DonatCoklat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Donat Kentang',
-                'slug'        => 'donat-kentang',
-                'description' => 'Donat kentang lembut dengan gula halus.',
-                'price'       => 5000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/DonatKentang.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Brownies Cokelat',
-                'slug'        => 'brownies-cokelat',
-                'description' => 'Brownies cokelat legit dan fudgy.',
-                'price'       => 8000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/BrowniesCokelat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Blueberry Cheesecake',
-                'slug'        => 'blueberry-cheesecake',
-                'description' => 'Cheesecake lembut dengan topping blueberry segar.',
-                'price'       => 15000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/BlueberryCheesecake.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Panna Cotta Stroberi',
-                'slug'        => 'panna-cotta-stroberi',
-                'description' => 'Dessert panna cotta creamy dengan saus stroberi.',
-                'price'       => 13000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/PannaCottaStroberi.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Puding Karamel',
-                'slug'        => 'puding-karamel',
-                'description' => 'Puding susu dengan saus karamel manis.',
-                'price'       => 8000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/PudingKaramel.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Kue Mochi',
-                'slug'        => 'kue-mochi',
-                'description' => 'Kue mochi kenyal dengan isian kacang manis.',
-                'price'       => 7000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/KueMochi.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Kue Sus',
-                'slug'        => 'kue-sus',
-                'description' => 'Kue sus dengan isian krim vanilla lembut.',
-                'price'       => 5000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/KueSus.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Kue Rol Oreo',
-                'slug'        => 'kue-rol-oreo',
-                'description' => 'Bolu gulung dengan krim oreo yang manis.',
-                'price'       => 10000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/KueRolOreo.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Es Krim Cokelat',
-                'slug'        => 'es-krim-cokelat',
-                'description' => 'Es krim cokelat yang lembut dan creamy.',
-                'price'       => 8000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/EsKrimCokelat.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Es Krim Oreo',
-                'slug'        => 'es-krim-oreo',
-                'description' => 'Es krim vanilla dengan remahan biskuit oreo.',
-                'price'       => 9000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/EsKrimOreo.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Es Krim Stroberi',
-                'slug'        => 'es-krim-stroberi',
-                'description' => 'Es krim stroberi segar dengan rasa buah asli.',
-                'price'       => 8000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/EsKrimStroberi.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Astor Chocolate Wafer',
-                'slug'        => 'astor-chocolate-wafer',
-                'description' => 'Wafer stik coklat renyah dan lezat.',
-                'price'       => 4000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/AstorChocolateWafer.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Beng Beng',
-                'slug'        => 'beng-beng',
-                'description' => 'Wafer coklat karamel berlapis coklat renyah.',
-                'price'       => 3000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/BengBeng.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Nabati Wafer Richoco',
-                'slug'        => 'nabati-wafer-richoco',
-                'description' => 'Wafer coklat Nabati renyah dengan krim coklat.',
-                'price'       => 3000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/NabatiWaferRichoco.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Nextar Choco Brownies',
-                'slug'        => 'nextar-choco-brownies',
-                'description' => 'Snack brownies coklat kemasan praktis.',
-                'price'       => 4000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/NextarChocoBrownies.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Biskuit Better',
-                'slug'        => 'biskuit-better',
-                'description' => 'Biskuit manis renyah cocok untuk camilan.',
-                'price'       => 3000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/BiskuitBetter.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Chitato Lite Rumput Laut',
-                'slug'        => 'chitato-lite-rumput-laut',
-                'description' => 'Keripik kentang tipis rasa rumput laut.',
-                'price'       => 5000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/ChitatoLiteRumputLaut.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Keripik Potabee',
-                'slug'        => 'keripik-potabee',
-                'description' => 'Keripik kentang Potabee renyah aneka rasa.',
-                'price'       => 5000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/KeripikPotabee.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Qtela Balado',
-                'slug'        => 'qtela-balado',
-                'description' => 'Keripik singkong balado pedas manis khas.',
-                'price'       => 5000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/QtelaBalado.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Tic Tic Crunchy Stick',
-                'slug'        => 'tic-tic-crunchy-stick',
-                'description' => 'Stik jagung renyah dengan rasa jagung manis.',
-                'price'       => 3000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/TicTicCrunchyStick.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Oishi Sponge Crunch',
-                'slug'        => 'oishi-sponge-crunch',
-                'description' => 'Snack sponge jagung renyah rasa original.',
-                'price'       => 3000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/OishiSpongeCrunch.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Cimory UHT Marie Biscuits',
-                'slug'        => 'cimory-uht-marie-biscuits',
-                'description' => 'Susu UHT Cimory rasa biskuit marie.',
-                'price'       => 7000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/CimoryUhtMarieBiscuits.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Cimory Yogurt Bites Blueberry',
-                'slug'        => 'cimory-yogurt-bites-blueberry',
-                'description' => 'Yogurt bites Cimory rasa blueberry segar.',
-                'price'       => 8000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/CimoryYogurtBitesBlueberry.jpg',
-                'is_available'=> true,
-            ],
-        ];
+        // Validasi jika folder sumber buatanmu belum ada
+        if (!File::exists($sourcePath)) {
+            File::makeDirectory($sourcePath, 0755, true, true);
+            $this->command->warn("Folder sumber dibuat di: {$sourcePath}. Silakan isi foto dengan format 'namaMenu-harga.jpg' terlebih dahulu.");
+            return;
+        }
 
-        // ── PRODUK DAPUR SMK (shop2) ──────────────────────────────────
-        $products2 = [
+        // 3. Ambil semua file gambar dari folder sumber
+        $files = File::files($sourcePath);
 
-            // PAKET HEMAT
-            [
-                'name'        => 'Paket Hemat 1',
-                'slug'        => 'paket-hemat-1',
-                'description' => 'Paket nasi + ayam goreng + es teh untuk pelajar aktif.',
-                'price'       => 22000,
-                'category_id' => $paket?->id,
-                'image_path'  => 'asset/img/AyamGeprek.jpg',
-                'is_available'=> true,
-            ],
+        if (count($files) === 0) {
+            $this->command->warn("Folder 'public/asset/img' kosong. Menggunakan data cadangan (fallback)...");
 
-            // MAKANAN
-            [
-                'name'        => 'Jus Jeruk Segar',
-                'slug'        => 'jus-jeruk-segar',
-                'description' => 'Jus jeruk dingin kaya vitamin C.',
-                'price'       => 12000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/EsTeajus.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Kentang Goreng Dapur',
-                'slug'        => 'kentang-goreng-dapur',
-                'description' => 'Kentang goreng renyah ala Dapur SMK.',
-                'price'       => 10000,
-                'category_id' => $snack?->id,
-                'image_path'  => 'asset/img/KentangGoreng.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Nasi Goreng Dapur',
-                'slug'        => 'nasi-goreng-dapur',
-                'description' => 'Nasi goreng khas Dapur SMK dengan bumbu rahasia.',
-                'price'       => 15000,
-                'category_id' => $makanan?->id,
-                'image_path'  => 'asset/img/NasiGoreng.jpg',
-                'is_available'=> true,
-            ],
-            [
-                'name'        => 'Bubble Tea',
-                'slug'        => 'bubble-tea-dapur',
-                'description' => 'Bubble tea segar aneka varian rasa.',
-                'price'       => 14000,
-                'category_id' => $minuman?->id,
-                'image_path'  => 'asset/img/BubbleTeaGulaMerah.jpg',
-                'is_available'=> true,
-            ],
-        ];
+            // Menyesuaikan nama file contoh ke format camelCase sesuai struktur baru kamu
+            $fallbackMenus = [
+                'mieGulungRicePaperKrispi-12000.jpg',
+                'mieGulungMozzarella-15000.jpg',
+                'sotoAyamMadura-15000.jpg',
+                'baksoUratMercon-18000.jpg',
+                'nasiRamesLengko-10000.jpg',
+                'ayamGeprekRpl-13000.jpg',
+                'balaBalaHot-2000.jpg',
+                'gehuPedasJedur-2000.jpg',
+                'esTehManisJumbo-5000.jpg',
+                'jusManggaCreamy-8000.jpg',
+                'astorChocolateWafer-7000.jpg',
+                'bubbleTeaGulaMerah-12000.jpg',
+                'nasiGorengSpesial-15000.jpg'
+            ];
 
-        // Insert semua produk shop1
-        if ($shop1) {
-            foreach ($products1 as $data) {
-                if (!$data['category_id']) continue;
-                Product::firstOrCreate(
-                    [
-                        'shop_id' => $shop1->id,
-                        'slug'    => $data['slug'],
-                    ],
-                    array_merge($data, ['shop_id' => $shop1->id])
-                );
+            foreach ($fallbackMenus as $fakeFile) {
+                $this->createProductFromFilename($fakeFile, $shopIds, null, $targetStoragePath);
+            }
+
+            $this->command->info("Seeder dijalankan menggunakan data cadangan (File fisik asli tidak dikopi).");
+            return;
+        }
+
+        // 4. Jika ada file asli, kita kopi ke storage sekaligus daftarkan ke DB
+        foreach ($files as $file) {
+            $filename = $file->getFilename();
+            $this->createProductFromFilename($filename, $shopIds, $file->getRealPath(), $targetStoragePath);
+        }
+
+        $this->command->info("Sip! Berhasil merapikan nama menu, menyesuaikan kategori (Makanan/Minuman/Snack), dan menyalin produk ke storage.");
+    }
+
+    /**
+     * Fungsi Helper untuk memilah nama file & menyalin file ke storage
+     */
+    private function createProductFromFilename(string $filename, array $shopIds, ?string $sourceRealPath, string $targetStoragePath): void
+    {
+        // Ambil nama file tanpa ekstensi
+        $nameWithoutExtension = pathinfo($filename, PATHINFO_FILENAME);
+
+        // Coba pisahkan berdasarkan karakter '- ' untuk mencari harga
+        $parts = explode('-', $nameWithoutExtension);
+        $rawName = $parts[0]; // Contoh: astorChocolateWafer atau mie_gulung_rice_paper
+
+        // --- 1. Logika Merapikan Nama (Mendukung CamelCase dan Underscore ke Judul Ber-spasi) ---
+        // Jika nama file mengandung underscore, ubah dulu jadi spasi biasa
+        $spacedName = str_replace('_', ' ', $rawName);
+
+        // Regex untuk menyisipkan spasi sebelum huruf kapital (mengatasi camelCase seperti astorChocolateWafer)
+        $splitCamelCase = preg_replace('/(?<!^)(?=[A-Z])/', ' ', $spacedName);
+
+        // Ubah huruf pertama setiap kata menjadi Kapital (Title Case) dan buang spasi double jika ada
+        $productName = ucwords(trim($splitCamelCase));
+
+
+        // --- 2. Logika Variasi Harga Pintar ---
+        $price = 10000; // Default awal
+        $lowercaseName = strtolower($rawName);
+
+        if (isset($parts[1]) && is_numeric($parts[1])) {
+            $price = (int)$parts[1];
+        } else {
+            // Pengaman otomatis jika harga tidak ditulis di nama file
+            if (Str::contains($lowercaseName, ['es', 'jus', 'teh', 'minum', 'drink', 'tea', 'bubble'])) {
+                $price = rand(3, 8) * 1000;
+            } elseif (Str::contains($lowercaseName, ['wafer', 'astor', 'bala', 'gehu', 'gorengan', 'krupuk', 'snack', 'krispi', 'kue'])) {
+                $price = rand(2, 6) * 1000;
+            } else {
+                $price = rand(10, 18) * 1000;
             }
         }
 
-        // Insert semua produk shop2
-        if ($shop2) {
-            foreach ($products2 as $data) {
-                if (!$data['category_id']) continue;
-                Product::firstOrCreate(
-                    [
-                        'shop_id' => $shop2->id,
-                        'slug'    => $data['slug'],
-                    ],
-                    array_merge($data, ['shop_id' => $shop2->id])
-                );
-            }
+
+        // --- 3. Logika Penyesuaian Kategori Pintar (Makanan, Minuman, Snack) ---
+        if (Str::contains($lowercaseName, ['es', 'jus', 'teh', 'minum', 'drink', 'tea', 'bubble', 'boba', 'coffee', 'kopi'])) {
+            $categoryId = 2;
+            $categoryName = 'Minuman';
+        } elseif (Str::contains($lowercaseName, ['wafer', 'astor', 'bala', 'gehu', 'gorengan', 'krupuk', 'snack', 'snack', 'kue', 'roti', 'camilan'])) {
+            $categoryId = 3;
+            $categoryName = 'Snack';
+        } else {
+            $categoryId = 1;
+            $categoryName = 'Makanan';
         }
+
+        // Pastikan record kategori dengan ID tersebut ada di database (mencegah error Foreign Key)
+        $categoryExists = DB::table('categories')->where('id', $categoryId)->exists();
+        if (!$categoryExists) {
+            DB::table('categories')->insert([
+                'id'         => $categoryId,
+                'name'       => $categoryName,
+                'slug'       => Str::slug($categoryName),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+
+        // Jika ada file fisik aslinya di folder public/asset/img, kita kopi ke storage
+        if ($sourceRealPath) {
+            File::copy($sourceRealPath, $targetStoragePath . '/' . $filename);
+        }
+
+        $assignedShopId = $shopIds[array_rand($shopIds)];
+        $productSlug = Str::slug($productName) . '-' . Str::random(5);
+
+        Product::create([
+            'shop_id'      => $assignedShopId,
+            'category_id'  => $categoryId,
+            'name'         => $productName, // Hasil konversi: "Astor Chocolate Wafer", "Bubble Tea Gula Merah", dll.
+            'slug'         => $productSlug,
+            'description'  => "Menu pilihan {$productName} lezat dan higienis, disajikan langsung di kantin sekolah.",
+            'price'        => $price,
+            'image_path'   => "products/{$filename}",
+            'is_available' => true,
+        ]);
     }
 }

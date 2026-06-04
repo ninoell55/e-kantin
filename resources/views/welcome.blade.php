@@ -1,231 +1,1057 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kantin Digital SMK - Clean & Modern Illustration</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
-</head>
-<body class="bg-[#fafafa] text-[#1f285a] antialiased overflow-x-hidden">
+@extends('layouts.app')
 
-    <header class="w-full bg-white border-b border-gray-100 px-6 lg:px-16 py-4 relative z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo SMK" class="w-9 h-9 object-contain">
-                <span class="font-extrabold text-xl tracking-tight">Foo<span class="text-[#661a15]">dy</span></span>
+@section('title', 'Foody - E-Kantin SMKN 1 Cirebon')
+
+@section('content')
+    <div class="w-full bg-gray-50 text-gray-800">
+
+        <nav
+            class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+            <!-- Layout edge-to-edge full width dengan padding horizontal konsisten -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+                <div class="flex items-center justify-between h-16 sm:h-20 w-full">
+
+                    <!-- Logo Brand -->
+                    <div class="flex items-center gap-3 shrink-0">
+                        <div
+                            class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-linear-to-br from-primary to-secondary shadow-lg shadow-(--color-primary)/20">
+
+                            <i class="ti ti-bowl-spoon text-white text-2xl"></i>
+
+                            <!-- Accent -->
+                            <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-tertiary border-2 border-white">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col leading-none">
+                            <span class="text-2xl font-black tracking-tight text-primary">
+                                Foody
+                            </span>
+                            <span class="text-[10px] font-medium tracking-tighter text-gray-500">
+                                E-Kantin SMKN 1 Cirebon
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Links (Desktop: Tampak dari md ke atas) -->
+                    <div class="hidden md:flex items-center lg:space-x-8 md:space-x-6 text-sm font-semibold">
+                        <a href="#" class="text-secondary transition-colors duration-200">Halaman Utama</a>
+                        <a href="#menu" class="text-gray-600 hover:text-secondary transition-colors duration-200">Menu
+                            Populer</a>
+                        <a href="#kantin" class="text-gray-600 hover:text-secondary transition-colors duration-200">Mitra
+                            Kantin</a>
+                        <a href="#ulasan"
+                            class="text-gray-600 hover:text-secondary transition-colors duration-200">Testimoni</a>
+                    </div>
+
+                    <!-- Action Buttons (Desktop: Masuk / Mulai Order) -->
+                    <div class="hidden md:flex items-center space-x-4 shrink-0">
+                        @if (Route::has('login'))
+                            @auth
+                                <a href="{{ route(Auth::user()->getDashboardRouteName()) }}"
+                                    class="w-full sm:w-auto text-center px-5 py-2.5 font-bold text-white bg-secondary rounded-xl shadow-lg transition-all duration-300 hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-0.5">
+                                    Dashboard
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}"
+                                    class="w-full sm:w-auto text-center px-10 py-4 font-bold text-white bg-primary rounded-xl shadow-lg transition-all duration-300 hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-0.5">
+                                    Login
+                                </a>
+                            @endauth
+                        @endif
+                    </div>
+
+                    <!-- Mobile Menu Button (Hanya tampak di bawah screen md) -->
+                    <div class="flex md:hidden items-center">
+                        <button type="button" onclick="toggleMobileMenu()"
+                            class="p-2 rounded-xl text-primary hover:bg-gray-50 focus:outline-none transition-colors duration-200"
+                            aria-label="Toggle Menu">
+                            <i id="menu-icon" class="ti ti-menu-2 text-2xl"></i>
+                        </button>
+                    </div>
+
+                </div>
             </div>
-            
-            <div class="hidden md:flex items-center gap-8 font-bold text-sm text-gray-600">
-                <a href="#" class="text-[#1f285a] hover:text-[#661a15] transition">Pesan Makanan</a>
-                <a href="#menu" class="hover:text-[#661a15] transition">Menu</a>
-                <a href="#tentang" class="hover:text-[#661a15] transition">Tentang Kami</a>
-                <a href="#kontak" class="hover:text-[#661a15] transition">Kontak</a>
+
+            <!-- Mobile Drawer Menu (Tutup secara default, gunakan JS toggle kelas 'hidden') -->
+            <div id="mobile-menu"
+                class="hidden md:hidden w-full bg-white border-t border-gray-100 px-4 py-4 space-y-3 shadow-lg absolute left-0 top-full">
+                <div class="flex flex-col space-y-1">
+                    <a href="#" onclick="toggleMobileMenu()"
+                        class="block px-4 py-2.5 text-sm font-bold text-secondary bg-secondary/5 rounded-xl">Halaman
+                        Utama</a>
+                    <a href="#menu" onclick="toggleMobileMenu()"
+                        class="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-secondary hover:bg-gray-50 rounded-xl transition-colors">Menu
+                        Populer</a>
+                    <a href="#kantin" onclick="toggleMobileMenu()"
+                        class="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-secondary hover:bg-gray-50 rounded-xl transition-colors">Mitra
+                        Kantin</a>
+                    <a href="#ulasan" onclick="toggleMobileMenu()"
+                        class="block px-4 py-2.5 text-sm font-semibold text-gray-600 hover:text-secondary hover:bg-gray-50 rounded-xl transition-colors">Testimoni</a>
+                </div>
+
+                <div class="pt-3 border-t border-gray-100 flex flex-col gap-2">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ route(Auth::user()->getDashboardRouteName()) }}"
+                                class="w-full sm:w-auto text-center px-10 py-4 font-bold text-white bg-secondary rounded-xl shadow-lg transition-all duration-300 hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-0.5">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="w-full sm:w-auto text-center px-10 py-4 font-bold text-white bg-primary rounded-xl shadow-lg transition-all duration-300 hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-0.5">
+                                Login
+                            </a>
+                        @endauth
+                    @endif
+                </div>
             </div>
-        </div>
-    </header>
+        </nav>
 
-    <section class="relative bg-white pt-2 pb-20 lg:pt-4 lg:pb-28 overflow-hidden border-b border-gray-50">
-        
-        <div class="absolute top-0 left-0 right-0 h-[380px] md:h-[480px] bg-[#d9d9d9]/60 rounded-b-[40px] md:rounded-b-[80px] z-0"></div>
-        
-        <div class="absolute -top-16 -left-12 w-64 h-64 md:w-[450px] md:h-[450px] bg-[#1f285a] rounded-full z-0"></div>
-        
-        <div class="absolute top-24 -right-16 w-56 h-72 md:w-[380px] md:h-[480px] bg-[#661a15] rounded-[100px] z-0 rotate-12"></div>
+        <script>
+            function toggleMobileMenu() {
+                const menu = document.getElementById('mobile-menu');
+                const icon = document.getElementById('menu-icon');
 
-        <div class="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-            
-            <div class="lg:col-span-6 lg:order-2 flex justify-center items-center relative mt-4 lg:mt-0">
-                <div class="absolute -bottom-6 w-[120%] h-24 bg-white rounded-t-[100px] blur-sm hidden lg:block"></div>
-                
-                <img src="{{ asset('images/melamun.png') }}" alt="Ilustrasi Utama" 
-                     class="w-full max-w-[340px] md:max-w-[420px] h-auto object-contain drop-shadow-lg relative z-10 transform hover:scale-[1.02] transition duration-500">
+                if (menu.classList.contains('hidden')) {
+                    menu.classList.remove('hidden');
+                    icon.classList.remove('ti-menu-2');
+                    icon.classList.add('ti-x'); // Ubah icon jadi silang (close)
+                } else {
+                    menu.classList.add('hidden');
+                    icon.classList.remove('ti-x');
+                    icon.classList.add('ti-menu-2'); // Kembalikan ke hamburger icon
+                }
+            }
+        </script>
+
+        <header class="relative w-full bg-white pt-8 pb-14 lg:pt-16 lg:pb-24 border-b border-gray-100">
+            <!-- Mengubah container menjadi w-full tanpa batasan max-w, menggunakan padding horizontal responsif agar tetap rapi di ujung layar -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center w-full">
+
+                    <!-- Hero Left: Text & Call to Actions -->
+                    <div class="lg:col-span-7 flex flex-col justify-center text-center lg:text-left space-y-6 w-full">
+
+                        <!-- Scaling font size untuk memanfaatkan layar lebar secara optimal -->
+                        <h1
+                            class="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold text-primary tracking-tight leading-none">
+                            Pesan Makanan Kantin <br class="hidden sm:inline">
+                            <span class="text-secondary">Jadi Lebih Mudah</span>
+                        </h1>
+
+                        <!-- Menghilangkan max-w-xl agar teks memanfaatkan ruang horizontal secara penuh -->
+                        <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-full leading-relaxed">
+                            Nikmati kemudahan memesan makanan dan minuman favoritmu di kantin sekolah tanpa perlu mengantre.
+                            Lebih cepat, praktis, dan higienis langsung dari genggamanmu!
+                        </p>
+
+                        <div
+                            class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2 w-full">
+                            <a href="#menu"
+                                class="w-full sm:w-auto text-center px-10 py-4 font-bold text-white bg-primary rounded-xl shadow-lg transition-all duration-300 hover:bg-opacity-90 hover:shadow-xl hover:-translate-y-0.5">
+                                Mulai Pesan
+                            </a>
+                            <a href="#kantin"
+                                class="w-full sm:w-auto text-center px-10 py-4 font-bold text-primary bg-white border-2 border-gray-200 rounded-xl transition-all duration-300 hover:border-primary hover:bg-gray-50">
+                                Lihat Kantin
+                            </a>
+                        </div>
+
+                        <!-- Menghilangkan max-w-md agar grid statistik melebar penuh mengikuti kolom kiri -->
+                        <div class="grid grid-cols-3 gap-6 pt-8 border-t border-gray-100 w-full">
+                            <div class="text-center lg:text-left">
+                                <span class="block text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary">12+</span>
+                                <span class="text-xs text-gray-500 font-semibold uppercase tracking-wider block mt-1">Jumlah
+                                    Kantin</span>
+                            </div>
+                            <div class="text-center lg:text-left">
+                                <span class="block text-2xl sm:text-3xl font-bold text-secondary md:text-4xl">150+</span>
+                                <span class="text-xs text-gray-500 font-semibold uppercase tracking-wider block mt-1">Menu
+                                    Aktif</span>
+                            </div>
+                            <div class="text-center lg:text-left">
+                                <span class="block text-2xl sm:text-3xl font-bold text-tertiary md:text-4xl">5K+</span>
+                                <span
+                                    class="text-xs text-gray-500 font-semibold uppercase tracking-wider block mt-1">Pesanan
+                                    Selesai</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Right: Dynamic Full-Width Illustration -->
+                    <div class="lg:col-span-5 relative flex justify-center items-center mt-8 lg:mt-0 w-full">
+                        <div
+                            class="absolute inset-0 bg-linear-to-tr from-tertiary/20 to-secondary/10 rounded-full blur-3xl filter -z-10">
+                        </div>
+                        <!-- Mengubah max-w-sm/md menjadi w-full penuh agar proporsional dengan layout kiri yang melebar -->
+                        <div
+                            class="relative w-full p-4 bg-white rounded-2xl shadow-2xl border border-gray-100 transform hover:rotate-1 transition-transform duration-500">
+                            <!-- Menyesuaikan tinggi gambar (h-96 sampai h-112) agar seimbang pada resolusi layar ultra-wide -->
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+                                alt="Ilustrasi Makanan Modern"
+                                class="w-full h-64 sm:h-80 lg:h-96 xl:h-112 object-cover rounded-xl shadow-inner">
+                            <div
+                                class="absolute -bottom-4 left-4 sm:left-8 bg-white p-4 rounded-xl shadow-lg border border-gray-50 flex items-center space-x-3 z-10">
+                                <div class="p-2 bg-tertiary rounded-lg text-primary">
+                                    <i class="ti ti-flame text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 font-medium">Menu Terpopuler</p>
+                                    <p class="text-sm font-bold text-primary">Nasi Ayam Geprek Skanic</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+        </header>
 
-            <div class="lg:col-span-6 lg:order-1 space-y-6 text-center lg:text-left -mt-6 lg:-mt-10">
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#1f285a] leading-[1.2] tracking-tight">
-                    Kendalikan Perut <br class="hidden sm:inline">
-                    <span class="text-[#661a15]">Anda</span>
-                </h1>
-                <p class="text-gray-500 text-sm sm:text-base max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
-                    Pesan yang anda inginkan dari kantin sekolah jadi lebih mudah lewat genggaman jari Anda tanpa perlu mengantre.
+        <section class="w-full py-12 lg:py-20 bg-white border-b border-gray-50">
+            <!-- Menggunakan padding horizontal yang konsisten dengan konsep full-width hero sebelumnya -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+
+                <div class="text-center max-w-3xl mx-auto mb-10 lg:mb-16">
+                    <span class="text-sm font-bold tracking-widest text-secondary uppercase">Sederhana & Ringkas</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-2">Cara Kerja Foody</h2>
+                    <p class="text-gray-600 mt-3 text-sm sm:text-base">Selesaikan pesananmu hanya dalam empat langkah mudah
+                        dari smartphone.</p>
+                </div>
+
+                <!-- Perubahan Utama: Menggunakan grid-cols-2 dari ukuran terkecil (mobile), lalu naik ke lg:grid-cols-4 -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative w-full">
+
+                    <!-- Card 1: Pilih Kantin -->
+                    <div
+                        class="relative bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100 group transition-all duration-300 hover:bg-white hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center text-white mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="ti ti-building-store text-xl sm:text-2xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-2">Pilih Kantin</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Cari dan pilih stan kantin atau
+                                vendor favoritmu di lingkungan sekolah.</p>
+                        </div>
+                        <span
+                            class="absolute top-4 right-4 sm:top-6 sm:right-6 text-2xl sm:text-3xl font-black text-gray-200 group-hover:text-tertiary transition-colors duration-300">01</span>
+                    </div>
+
+                    <!-- Card 2: Pilih Menu -->
+                    <div
+                        class="relative bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100 group transition-all duration-300 hover:bg-white hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary flex items-center justify-center text-white mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="ti ti-tools-kitchen-2 text-xl sm:text-2xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-2">Pilih Menu</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Jelajahi daftar menu makanan dan
+                                minuman lezat yang tersedia hari ini.</p>
+                        </div>
+                        <span
+                            class="absolute top-4 right-4 sm:top-6 sm:right-6 text-2xl sm:text-3xl font-black text-gray-200 group-hover:text-tertiary transition-colors duration-300">02</span>
+                    </div>
+
+                    <!-- Card 3: Bayar -->
+                    <div
+                        class="relative bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100 group transition-all duration-300 hover:bg-white hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-tertiary flex items-center justify-center text-primary mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="ti ti-wallet text-xl sm:text-2xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-2">Bayar</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Gunakan metode pembayaran tunai
+                                langsung atau scan QR Personal vendor.</p>
+                        </div>
+                        <span
+                            class="absolute top-4 right-4 sm:top-6 sm:right-6 text-2xl sm:text-3xl font-black text-gray-200 group-hover:text-secondary transition-colors duration-300">03</span>
+                    </div>
+
+                    <!-- Card 4: Ambil / Diantar -->
+                    <div
+                        class="relative bg-gray-50 p-5 sm:p-6 rounded-2xl border border-gray-100 group transition-all duration-300 hover:bg-white hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div
+                                class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary flex items-center justify-center text-white mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i class="ti ti-package text-xl sm:text-2xl"></i>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-primary mb-2">Ambil / Diantar</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Ambil langsung ke stan atau gunakan
+                                opsi kirim ke ruang kelas/guru.</p>
+                        </div>
+                        <span
+                            class="absolute top-4 right-4 sm:top-6 sm:right-6 text-2xl sm:text-3xl font-black text-gray-200 group-hover:text-tertiary transition-colors duration-300">04</span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="w-full py-12 lg:py-20 bg-gray-50 border-b border-gray-100">
+            <!-- Menggunakan layout edge-to-edge full width dengan padding horizontal responsif yang sinkron -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+
+                <div class="text-center max-w-3xl mx-auto mb-10 lg:mb-16">
+                    <span class="text-sm font-bold tracking-widest text-primary uppercase">Mengapa Memilih Kami</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-2">Keunggulan Aplikasi Foody</h2>
+                    <p class="text-gray-600 mt-3 text-sm sm:text-base">Sistem e-kantin modern yang dirancang khusus untuk
+                        kenyamanan ekosistem sekolah.</p>
+                </div>
+
+                <!-- Mengubah struktur grid agar menampilkan 2 kolom di mobile/smartphone (grid-cols-2),
+                                                                                         lalu otomatis bertransformasi menjadi 3 kolom di layar besar (lg:grid-cols-3) -->
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+
+                    <!-- Keunggulan 1 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-primary/10 text-primary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-clock text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Hemat Waktu</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Pesan sebelum jam istirahat tiba,
+                                makanan langsung siap tanpa antre panjang.</p>
+                        </div>
+                    </div>
+
+                    <!-- Keunggulan 2 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-secondary/10 text-secondary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-device-mobile text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Pesan dari Mana Saja</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Akses menu dan lakukan pemesanan
+                                langsung dari area kelas maupun lapangan olahraga.</p>
+                        </div>
+                    </div>
+
+                    <!-- Keunggulan 3 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-tertiary/20 text-primary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-credit-card text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Pembayaran Fleksibel</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Mendukung pembayaran langsung di
+                                tempat (Cash) maupun transfer QR Digital.</p>
+                        </div>
+                    </div>
+
+                    <!-- Keunggulan 4 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-primary/10 text-primary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-door text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Antar ke Ruangan</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Layanan kurir khusus internal untuk
+                                mengirim pesanan langsung ke kelas atau ruang guru.</p>
+                        </div>
+                    </div>
+
+                    <!-- Keunggulan 5 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-secondary/10 text-secondary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-bell-ringing text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Status Real-time</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Pantau perkembangan status
+                                makananmu
+                                mulai dari diproses hingga siap diambil.</p>
+                        </div>
+                    </div>
+
+                    <!-- Keunggulan 6 -->
+                    <div
+                        class="flex flex-col sm:flex-row items-start p-5 sm:p-6 bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md w-full">
+                        <div class="p-2.5 sm:p-3 bg-tertiary/20 text-primary rounded-xl mb-3 sm:mb-0 sm:mr-4 shrink-0">
+                            <i class="ti ti-building-store text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1">Banyak Pilihan Kantin</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">Tersedia beragam stan penjual
+                                hidangan utama, camilan ringan, hingga minuman segar.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="menu" class="w-full py-12 lg:py-20 bg-white border-b border-gray-50">
+            <!-- Menggunakan layout edge-to-edge full width dengan padding horizontal responsif yang konsisten -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+
+                <!-- Header Section: Judul & Link Semua Menu -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4 w-full">
+                    <div>
+                        <span class="text-sm font-bold tracking-widest text-secondary uppercase">Paling Banyak
+                            Dicari</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-1">Menu Terfavorit Hari Ini</h2>
+                    </div>
+                    <a href="#"
+                        class="inline-flex items-center space-x-1 text-sm font-bold text-secondary hover:underline group shrink-0">
+                        <span>Lihat Semua Menu</span>
+                        <i class="ti ti-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
+                    </a>
+                </div>
+
+                <!-- Perubahan Utama: Menggunakan grid-cols-2 dari mobile, lalu naik ke sm:grid-cols-2 dan lg:grid-cols-3 -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+
+                    <!-- Card Menu 1 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <!-- Tinggi gambar disesuaikan (h-36 di mobile, h-48 di desktop) agar proporsional saat layout menjadi 2 kolom kecil -->
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80"
+                                alt="Salad Sayur Saus Spesial"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <!-- Padding disesuaikan p-4 di mobile, p-5 di layar besar -->
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Kantin
+                                Ibu Sumiyati (Stan 3)</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Salad Sayur
+                                Saus Spesial</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Sayuran segar
+                                organik dengan siraman saus mayones racikan khas nusantara yang gurih.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 12.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Menu 2 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=500&q=80"
+                                alt="Roti Bakar Keju Meleleh"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Kantin
+                                Berkah Mandiri</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Roti Bakar Keju
+                                Meleleh</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Roti panggang
+                                mentega dengan isian premium keju mozarella melimpah bertekstur mulur.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 10.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Menu 3 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80"
+                                alt="Beef Burger Double Cheese"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Skanic
+                                Burger Corner</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Beef Burger
+                                Double Cheese</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Daging sapi panggang
+                                tebal berlapis dua keju slice cheddar gurih dipadu selada segar.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 15.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Menu 4 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=500&q=80"
+                                alt="Donat Cokelat Meises Glaze"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Kedai Es
+                                Segar Cozy</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Donat Cokelat
+                                Meises Glaze</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Donat kentang empuk
+                                super lembut dilapisi cokelat pekat cair bertabur meises melimpah.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 5.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Menu 5 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80"
+                                alt="Iga Bakar Sambal Korek"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Kantin
+                                Utama Mbak Sri</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Iga Bakar
+                                Sambal Korek</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Iga sapi pilihan
+                                empuk dengan bumbu meresap berpadu ulekan sambal bawang pedas nendang.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 20.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Menu 6 -->
+                    <div
+                        class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative w-full h-36 sm:h-48 overflow-hidden bg-gray-100">
+                            <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=500&q=80"
+                                alt="Es Krim Vanilla Strawberry"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-bold bg-tertiary text-primary rounded-full shadow-sm">
+                                <i class="ti ti-check inline mr-0.5 sm:mr-1"></i>Tersedia
+                            </span>
+                        </div>
+                        <div class="p-4 sm:p-5 flex flex-col grow">
+                            <span class="text-[10px] sm:text-xs font-medium text-gray-400 mb-1 block line-clamp-1">Kantin
+                                Jus Sehat Sejahtera</span>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary line-clamp-1 mb-1 sm:mb-2">Es Krim Vanilla
+                                Strawberry</h3>
+                            <p class="text-xs text-gray-500 line-clamp-2 mb-3 sm:mb-4 hidden sm:block">Dua scoop besar es
+                                krim rasa vanila susu dan stroberi asam manis segar penyejuk hari.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-auto pt-2.5 sm:pt-3 border-t border-gray-50">
+                                <span class="text-sm sm:text-lg font-black text-secondary">Rp 8.000</span>
+                                <button
+                                    class="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-primary rounded-lg transition-colors duration-300 hover:bg-opacity-90">
+                                    Pesan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="kantin" class="w-full py-12 lg:py-20 bg-gray-50 border-b border-gray-100">
+            <!-- Layout edge-to-edge full width dengan padding horizontal yang konsisten dengan section menu -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+
+                <!-- Header Section -->
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="text-sm font-bold tracking-widest text-primary uppercase">Mitra Stan Sekolah</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-2">Daftar Kantin Terpercaya</h2>
+                    <p class="text-sm sm:text-base text-gray-600 mt-3">Deretan merchant kantin higienis yang siap melayani
+                        kebutuhan makan sehatmu.</p>
+                </div>
+
+                <!-- Layout Grid: Menggunakan grid-cols-2 dari mobile agar efisien tempat dan tetap rapi -->
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+
+                    <!-- Card Kantin 1 -->
+                    <div
+                        class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative h-32 sm:h-64 bg-gray-200 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=500&q=80"
+                                alt="Kantin Utama Mbak Sri"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-md">
+                                Buka
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex flex-col grow">
+                            <h3 class="text-sm sm:text-xl font-bold text-primary mb-1 line-clamp-1">Kantin Utama Mbak Sri
+                            </h3>
+                            <p class="text-xs text-gray-500 mb-4 line-clamp-2 min-h-8 sm:min-h-0">Aneka masakan
+                                rumahan berat, nasi rames, prasmanan sehat, mi instant, es teh manis jumbo.</p>
+
+                            <!-- Detail Informasi Toko -->
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pt-3 sm:pt-4 border-t border-gray-100 text-[11px] sm:text-sm font-semibold mt-auto">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="ti ti-salad text-secondary mr-1"></i>32 Menu
+                                </span>
+                                <span class="text-primary flex items-center flex-wrap">
+                                    <i class="ti ti-star-filled text-tertiary mr-1"></i>4.8
+                                    <span
+                                        class="text-[10px] sm:text-xs text-gray-400 font-normal ml-0.5 sm:ml-1 hidden sm:inline">(120)</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Kantin 2 -->
+                    <div
+                        class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative h-32 sm:h-64 bg-gray-200 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=500&q=80"
+                                alt="Skanic Burger Corner"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <div
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-md">
+                                Buka
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex flex-col grow">
+                            <h3 class="text-sm sm:text-xl font-bold text-primary mb-1 line-clamp-1">Skanic Burger Corner
+                            </h3>
+                            <p class="text-xs text-gray-500 mb-4 line-clamp-2 min-h-8 sm:min-h-0">Spesialis makanan
+                                barat cepat saji, burger sapi premium, hotdog sosis bakar jumbo, kentang goreng krispi.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pt-3 sm:pt-4 border-t border-gray-100 text-[11px] sm:text-sm font-semibold mt-auto">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="ti ti-salad text-secondary mr-1"></i>15 Menu
+                                </span>
+                                <span class="text-primary flex items-center flex-wrap">
+                                    <i class="ti ti-star-filled text-tertiary mr-1"></i>4.9
+                                    <span
+                                        class="text-[10px] sm:text-xs text-gray-400 font-normal ml-0.5 sm:ml-1 hidden sm:inline">(95)</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Kantin 3 -->
+                    <div
+                        class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col group transition-all duration-300 hover:shadow-xl w-full">
+                        <div class="relative h-32 sm:h-64 bg-gray-200 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1498654896293-37aaea113fd9?auto=format&fit=crop&w=500&q=80"
+                                alt="Kedai Es Segar Cozy"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <!-- Status Tutup menggunakan warna gray-500 agar kontrasnya lebih terlihat kokoh -->
+                            <div
+                                class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gray-500 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full shadow-md">
+                                Tutup
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex flex-col grow">
+                            <h3 class="text-sm sm:text-xl font-bold text-primary mb-1 line-clamp-1">Kedai Es Segar Cozy
+                            </h3>
+                            <p class="text-xs text-gray-500 mb-4 line-clamp-2 min-h-8 sm:min-h-0">Macam jus buah segar
+                                murni, sup buah susu melon, es serut pelangi cokelat oreo, aneka camilan ringan donat.</p>
+                            <div
+                                class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pt-3 sm:pt-4 border-t border-gray-100 text-[11px] sm:text-sm font-semibold mt-auto">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="ti ti-salad text-secondary mr-1"></i>24 Menu
+                                </span>
+                                <span class="text-primary flex items-center flex-wrap">
+                                    <i class="ti ti-star-filled text-tertiary mr-1"></i>4.7
+                                    <span
+                                        class="text-[10px] sm:text-xs text-gray-400 font-normal ml-0.5 sm:ml-1 hidden sm:inline">(80)</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="w-full py-12 lg:py-20 bg-white border-b border-gray-50">
+            <!-- Layout edge-to-edge full width dengan padding horizontal konsisten -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center w-full">
+
+                    <!-- Kolom Kiri: Teks Deskripsi & Checklists -->
+                    <div class="w-full">
+                        <span class="text-sm font-bold tracking-widest text-secondary uppercase">Fungsionalitas
+                            Premium</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-2 mb-4 sm:mb-6">Layanan Fleksibel
+                            Sesuai Kebutuhanmu</h2>
+                        <p class="text-sm sm:text-base text-gray-600 mb-6 leading-relaxed">
+                            Kami mengerti dinamika aktivitas sekolah yang padat. Oleh karena itu, Foody menyediakan opsi
+                            distribusi dan transaksi yang aman demi mendukung kelancaran kegiatan belajar mengajar.
+                        </p>
+
+                        <!-- Checklist Fitur -->
+                        <div class="space-y-3 sm:space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-tertiary rounded-full flex items-center justify-center text-primary text-[10px] sm:text-xs shrink-0">
+                                    <i class="ti ti-check font-bold"></i>
+                                </div>
+                                <span class="text-sm sm:text-base font-medium text-primary">Sistem integrasi tanpa
+                                    hambatan</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-tertiary rounded-full flex items-center justify-center text-primary text-[10px] sm:text-xs shrink-0">
+                                    <i class="ti ti-check font-bold"></i>
+                                </div>
+                                <span class="text-sm sm:text-base font-medium text-primary">Keamanan transaksi tunai &
+                                    non-tunai terjamin</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-5 h-5 bg-tertiary rounded-full flex items-center justify-center text-primary text-[10px] sm:text-xs shrink-0">
+                                    <i class="ti ti-check font-bold"></i>
+                                </div>
+                                <span class="text-sm sm:text-base font-medium text-primary">Dukungan penuh tim OSIS
+                                    sekolah</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Grid Fitur Layanan (Mobile diubah ke grid-cols-2 agar presisi dan tidak makan space vertikal) -->
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6 w-full">
+
+                        <!-- Fitur 1: Pickup -->
+                        <div
+                            class="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col group transition-all duration-300 hover:bg-white hover:shadow-xl w-full">
+                            <div
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center mb-3 sm:mb-4 shrink-0">
+                                <i class="ti ti-walk text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1 sm:mb-2 line-clamp-1">Ambil Sendiri
+                                (Pickup)</h3>
+                            <p
+                                class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                                Pesan online, pantau status masak, lalu datang ambil langsung ke stan vendor pas bel
+                                berbunyi.</p>
+                        </div>
+
+                        <!-- Fitur 2: Delivery -->
+                        <div
+                            class="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col group transition-all duration-300 hover:bg-white hover:shadow-xl w-full">
+                            <div
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-secondary text-white flex items-center justify-center mb-3 sm:mb-4 shrink-0">
+                                <i class="ti ti-truck-delivery text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1 sm:mb-2 line-clamp-1">Layanan Antar
+                                (Delivery)</h3>
+                            <p
+                                class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                                Mager keluar kelas? Manfaatkan opsi pengantaran langsung oleh petugas kurir ke lokasimu.</p>
+                        </div>
+
+                        <!-- Fitur 3: Cash -->
+                        <div
+                            class="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col group transition-all duration-300 hover:bg-white hover:shadow-xl w-full">
+                            <div
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-tertiary text-primary flex items-center justify-center mb-3 sm:mb-4 shrink-0">
+                                <i class="ti ti-coins text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1 sm:mb-2 line-clamp-1">Bayar Tunai
+                                (Cash)</h3>
+                            <p
+                                class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                                Fleksibel bayar cash langsung di tempat stan kantin ketika serah terima pesanan berlangsung.
+                            </p>
+                        </div>
+
+                        <!-- Fitur 4: QR Personal -->
+                        <div
+                            class="bg-gray-50 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col group transition-all duration-300 hover:bg-white hover:shadow-xl w-full">
+                            <!-- Icon disesuaikan menggunakan warna bg-primary agar skema warna tetap seimbang (2 primary, 1 secondary, 1 tertiary) -->
+                            <div
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white flex items-center justify-center mb-3 sm:mb-4 shrink-0">
+                                <i class="ti ti-qrcode text-lg sm:text-xl"></i>
+                            </div>
+                            <h3 class="text-sm sm:text-lg font-bold text-primary mb-1 sm:mb-2 line-clamp-1">QR Personal
+                            </h3>
+                            <p
+                                class="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-3 sm:line-clamp-none">
+                                Unggah atau tunjukkan bukti transaksi pembayaran lewat QR transfer dompet digital vendor.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="ulasan" class="w-full py-12 lg:py-20 bg-gray-50 border-b border-gray-100">
+            <!-- Layout edge-to-edge full width dengan padding horizontal yang presisi -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+
+                <!-- Header Section -->
+                <div class="text-center max-w-3xl mx-auto mb-10 lg:mb-14">
+                    <span class="text-sm font-bold tracking-widest text-secondary uppercase">Ulasan Pengguna</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-primary mt-2">Apa Kata Siswa Skanic?</h2>
+                    <p class="text-sm sm:text-base text-gray-600 mt-3">Cerita nyata kemudahan transaksi harian dari
+                        rekan-rekan pelajar SMKN 1 Cirebon.</p>
+                </div>
+
+                <!-- Layout Grid: 1 Kolom di Mobile, Horizontal Scroll / 3 Kolom dari Tablet ke atas -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+
+                    <!-- Card Testimoni 1 -->
+                    <div
+                        class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group transition-all duration-300 hover:shadow-xl w-full">
+                        <div>
+                            <!-- Star Ratings -->
+                            <div class="flex items-center text-tertiary mb-4 gap-0.5 text-sm sm:text-base">
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed italic mb-6">
+                                "Aplikasi ini sangat menolong saya menghemat waktu istirahat. Dulu harus lari rebutan antre
+                                beli siomay, sekarang tinggal klik dari kelas, pas ke kantin langsung ambil!"
+                            </p>
+                        </div>
+                        <!-- Identitas Siswa -->
+                        <div class="flex items-center pt-4 border-t border-gray-100 mt-auto">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
+                                alt="Avatar Siti Rahmawati"
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover mr-3 shrink-0 border border-gray-100">
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-bold text-primary">Siti Rahmawati</h4>
+                                <p class="text-[11px] sm:text-xs text-gray-400">Kelas XI RPL 1</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Testimoni 2 -->
+                    <div
+                        class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group transition-all duration-300 hover:shadow-xl w-full">
+                        <div>
+                            <div class="flex items-center text-tertiary mb-4 gap-0.5 text-sm sm:text-base">
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed italic mb-6">
+                                "Fitur pengantaran ke kelasnya juara banget! Waktu pengerjaan tugas proyek RPL padat,
+                                tinggal order camilan dan minum, kurir internal antar sampai depan pintu kelas."
+                            </p>
+                        </div>
+                        <div class="flex items-center pt-4 border-t border-gray-100 mt-auto">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"
+                                alt="Avatar Ahmad Fauzi"
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover mr-3 shrink-0 border border-gray-100">
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-bold text-primary">Ahmad Fauzi</h4>
+                                <p class="text-[11px] sm:text-xs text-gray-400">Kelas XII TKJ 2</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Testimoni 3 -->
+                    <div
+                        class="bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group transition-all duration-300 hover:shadow-xl w-full">
+                        <div>
+                            <div class="flex items-center text-tertiary mb-4 gap-0.5 text-sm sm:text-base">
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                                <i class="ti ti-star-filled"></i>
+                            </div>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed italic mb-6">
+                                "Tampilan antarmukanya sangat minimalis dan bersih, gampang dipahami lewat HP android jadul
+                                saya sekalipun. Bayar pakai transfer QRCode juga praktis tanpa ribet."
+                            </p>
+                        </div>
+                        <div class="flex items-center pt-4 border-t border-gray-100 mt-auto">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80"
+                                alt="Avatar Dewi Lestari"
+                                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover mr-3 shrink-0 border border-gray-100">
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-bold text-primary">Dewi Lestari</h4>
+                                <p class="text-[11px] sm:text-xs text-gray-400">Kelas X Akuntansi 3</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="w-full bg-primary py-16 lg:py-24 text-white relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-linear(#fbbf24_1px,transparent_1px)] bg-size-[16px_16px]">
+            </div>
+            <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 space-y-6">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+                    Tunggu Apa Lagi? <br>
+                    Gabung Bersama Foody Skanic Sekarang!
+                </h2>
+                <p class="text-base sm:text-lg text-gray-200 max-w-2xl mx-auto leading-relaxed">
+                    Buat akun belajarmu hari ini untuk merasakan kemudahan revolusi bertransaksi kuliner modern di
+                    lingkungan sekolah SMKN 1 Cirebon.
                 </p>
-                <div class="pt-2 flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
-                    <a href="{{ route('login') }}" class="w-full sm:w-auto px-10 py-4 bg-[#1f285a] hover:bg-[#661a15] text-white font-extrabold rounded-full shadow-lg shadow-[#1f285a]/20 transition-all duration-300 text-center tracking-wide">
-                        Mulai
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <a href="#"
+                        class="w-full sm:w-auto text-center px-8 py-4 font-bold text-primary bg-tertiary rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
+                        Daftar Akun Baru
+                    </a>
+                    <a href="#"
+                        class="w-full sm:w-auto text-center px-8 py-4 font-bold text-white bg-secondary rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
+                        Masuk (Login)
                     </a>
                 </div>
             </div>
+        </section>
 
-        </div>
-    </section>
+        <footer class="w-full bg-white border-t border-gray-100 text-gray-600">
+            <!-- Layout edge-to-edge full width dengan padding horizontal konsisten -->
+            <div class="w-full px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12">
 
-    <section class="py-16 bg-[#fafafa] border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-6 lg:px-16 text-center">
-            <h2 class="text-2xl md:text-3xl font-black text-[#1f285a] mb-12">Kenapa memilih Foody?</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div class="flex flex-col items-center text-center group">
-                    <div class="w-40 h-28 flex items-center justify-center mb-6 transition transform group-hover:scale-105 duration-300">
-                        <img src="{{ asset('images/order.png') }}" alt="Easy To Order" class="h-full object-contain">
+                <!-- Grid Links & Info: Menggunakan format grid adaptif yang rapi dari mobile ke desktop -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 md:gap-6 lg:gap-8 items-start w-full">
+
+                    <!-- Kolom 1: Branding & Deskripsi (Lebar 5 kolom di desktop) -->
+                    <div class="sm:col-span-2 md:col-span-5 space-y-4">
+                        <!-- Logo Brand -->
+                        <div class="flex items-center gap-3 shrink-0">
+                            <div
+                                class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-linear-to-br from-primary to-secondary shadow-lg shadow-(--color-primary)/20">
+
+                                <i class="ti ti-bowl-spoon text-white text-2xl"></i>
+
+                                <!-- Accent -->
+                                <div
+                                    class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-tertiary border-2 border-white">
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col leading-none">
+                                <span class="text-2xl font-black tracking-tight text-primary">
+                                    Foody
+                                </span>
+                                <span class="text-[10px] font-medium tracking-tighter text-gray-500">
+                                    E-Kantin SMKN 1 Cirebon
+                                </span>
+                            </div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-500 max-w-sm leading-relaxed">
+                            Sistem platform e-kantin pintar inovatif buatan siswa Jurusan Rekayasa Perangkat Lunak untuk
+                            peradaban sekolah digital mandiri.
+                        </p>
                     </div>
-                    <h4 class="font-extrabold text-lg text-[#1f285a] mb-2">Mudah di pesan</h4>
-                    <p class="text-sm text-gray-500 max-w-xs leading-relaxed">
-                        Anda hanya perlu beberapa langkah untuk memesan makanan.
-                    </p>
-                </div>
-                <div class="flex flex-col items-center text-center group">
-                    <div class="w-40 h-28 flex items-center justify-center mb-6 transition transform group-hover:scale-105 duration-300">
-                        <img src="{{ asset('images/mengantar.png') }}" alt="Fastest Delivery" class="h-full object-contain">
+
+                    <!-- Kolom 2: Tautan Cepat (Lebar 3 kolom di desktop) -->
+                    <div class="md:col-span-3 space-y-3">
+                        <h4 class="text-xs sm:text-sm font-bold text-primary uppercase tracking-wider">Tautan Cepat</h4>
+                        <ul class="space-y-2 text-xs sm:text-sm font-medium">
+                            <li>
+                                <a href="#"
+                                    class="text-gray-500 hover:text-secondary transition-colors duration-200 block py-0.5">Halaman
+                                    Utama</a>
+                            </li>
+                            <li>
+                                <a href="#menu"
+                                    class="text-gray-500 hover:text-secondary transition-colors duration-200 block py-0.5">Menu
+                                    Populer</a>
+                            </li>
+                            <li>
+                                <a href="#kantin"
+                                    class="text-gray-500 hover:text-secondary transition-colors duration-200 block py-0.5">Mitra
+                                    Kantin</a>
+                            </li>
+                        </ul>
                     </div>
-                    <h4 class="font-extrabold text-lg text-[#1f285a] mb-2">Pengiriman Tercepat</h4>
-                    <p class="text-sm text-gray-500 max-w-xs leading-relaxed">
-                        Pengiriman yang selalu tepat waktu, kini lebih cepat.
-                    </p>
-                </div>
-                <div class="flex flex-col items-center text-center group">
-                    <div class="w-40 h-28 flex items-center justify-center mb-6 transition transform group-hover:scale-105 duration-300">
-                        <img src="{{ asset('images/memasak.png') }}" alt="Best Quality" class="h-full object-contain">
+
+                    <!-- Kolom 3: Media Sosial & Info Kontak (Lebar 4 kolom di desktop) -->
+                    <div class="md:col-span-4 space-y-4">
+                        <h4 class="text-xs sm:text-sm font-bold text-primary uppercase tracking-wider">Media Sosial Kami
+                        </h4>
+                        <div class="flex items-center space-x-2.5 sm:space-x-3">
+                            <a href="#"
+                                class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-primary border border-gray-100 transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary"
+                                aria-label="Instagram">
+                                <i class="ti ti-brand-instagram text-lg"></i>
+                            </a>
+                            <a href="#"
+                                class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-primary border border-gray-100 transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary"
+                                aria-label="Facebook">
+                                <i class="ti ti-brand-facebook text-lg"></i>
+                            </a>
+                            <a href="#"
+                                class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-primary border border-gray-100 transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary"
+                                aria-label="Twitter">
+                                <i class="ti ti-brand-twitter text-lg"></i>
+                            </a>
+                            <a href="#"
+                                class="w-9 h-9 rounded-lg bg-gray-50 flex items-center justify-center text-primary border border-gray-100 transition-all duration-200 hover:bg-primary hover:text-white hover:border-primary"
+                                aria-label="GitHub">
+                                <i class="ti ti-brand-github text-lg"></i>
+                            </a>
+                        </div>
+                        <p class="text-[11px] sm:text-xs text-gray-400 max-w-xs leading-relaxed">
+                            Hubungi tim pengembang jika menemukan kendala sistem atau celah keamanan (bug).
+                        </p>
                     </div>
-                    <h4 class="font-extrabold text-lg text-[#1f285a] mb-2">Kualitas Terbaik</h4>
-                    <p class="text-sm text-gray-500 max-w-xs leading-relaxed">
-                        Bagi kami, bukan hanya kecepatan, tetapi kualitas juga yang utama.
-                    </p>
+
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="tentang" class="py-20 bg-white">
-        <div class="max-w-4xl mx-auto text-center px-6 space-y-6">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-[#1f285a] tracking-tight">
-                Santai saja di kelas, <br>
-                <span class="text-[#f1a80a]">pesananmu akan kami siapkan.</span>
-            </h2>
-            <p class="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto font-medium">
-                Sistem pintar terintegrasi yang memudahkan pemesanan makanan sehat tanpa harus membuang waktu istirahat yang berharga untuk berdesakan di depan meja stan.
-            </p>
-        </div>
-    </section>
+                <!-- Copyright & Credits Section -->
+                <div
+                    class="mt-12 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between text-[11px] sm:text-xs text-gray-400 gap-3 text-center sm:text-left">
+                    <p>&copy; 2026 Foody E-Kantin SMKN 1 Cirebon. All rights reserved.</p>
+                    <p class="font-medium text-gray-500">Dikembangkan oleh Tim Siswa Sukses RPL Skanic</p>
+                </div>
 
-    <section id="menu" class="py-16 bg-[#fafafa]">
-        <div class="max-w-7xl mx-auto px-6 lg:px-16">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
-                <h3 class="text-2xl font-black text-[#1f285a]">Jelajahi Kantin Kami</h3>
             </div>
+        </footer>
 
-           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
-        <div class="bg-[#fcf4f4] rounded-[22px] overflow-hidden h-48 mb-4 relative">
-            <img src="{{ asset('images/kantin-berkah.png') }}" alt="Kantin Berkah" class="w-full h-full object-cover">
-        </div>
-        
-        <div class="px-2 pb-2">
-            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Kantin Berkah</h4>
-            
-            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 5.000 - Rp 15.000</span>
-            
-            <div class="flex flex-wrap gap-2">
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Makanan Berat</span>
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Makanan Ringan</span>
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Minuman</span>
-            </div>
-        </div>
     </div>
-
-    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
-        <div class="bg-[#fefaf0] rounded-[22px] overflow-hidden h-48 mb-4 relative">
-            <img src="{{ asset('images/warung-janti.png') }}" alt="Warung Janti" class="w-full h-full object-cover">
-        </div>
-        
-        <div class="px-2 pb-2">
-            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Warung Bu Janti</h4>
-            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 3.000 - Rp 10.000</span>
-            
-            <div class="flex flex-wrap gap-2">
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Gorengan</span>
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Snack</span>
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Minuman Dingin</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-[28px] border border-gray-100 p-4 hover:shadow-xl hover:shadow-gray-200/40 transition duration-300">
-        <div class="bg-[#f4f6fa] rounded-[22px] overflow-hidden h-48 mb-4 relative">
-            <img src="{{ asset('images/kantin-sehat.png') }}" alt="Kantin Sehat" class="w-full h-full object-cover">
-        </div>
-        
-        <div class="px-2 pb-2">
-            <h4 class="font-extrabold text-xl text-[#1f285a] tracking-tight mb-1">Jajanan Sehat</h4>
-            <span class="block text-sm font-semibold text-gray-400 mb-4">± Rp 4.000 - Rp 12.000</span>
-            
-            <div class="flex flex-wrap gap-2">
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Aneka Jus</span>
-                <span class="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full">Salad Buah</span>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-
-   <footer id="kontak" class="bg-[#1f285a] text-white pt-16 pb-8 border-t border-navy-900/20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-3 gap-12 pb-12 border-b border-white/10">
-        
-        <div class="space-y-4">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-xl bg-[#661a15] flex items-center justify-center font-black text-sm text-[#f1a80a]">F</div>
-                <span class="font-black text-xl tracking-tight text-white">Foo<span class="text-[#f1a80a]">dy</span></span>
-            </div>
-            <p class="text-xs text-slate-300/80 font-medium leading-relaxed max-w-sm">
-                Platform digital kantin sekolah terpercaya demi efisiensi waktu istirahat dan pemantauan gizi sehat menyeluruh bagi siswa.
-            </p>
-        </div>
-
-        <div class="space-y-4">
-            <h6 class="font-extrabold text-xs text-[#f1a80a] uppercase tracking-widest">Jam Operasional</h6>
-            <div class="space-y-2">
-                <p class="text-sm font-bold text-white">Senin - Jumat</p>
-                <p class="text-xs text-slate-300/80 font-medium">07:00 - 15:00 WIB</p>
-                <p class="text-xs text-slate-400 font-medium italic mt-1">*Mengikuti jam istirahat sekolah</p>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <h6 class="font-extrabold text-xs text-[#f1a80a] uppercase tracking-widest">Bantuan & Akses</h6>
-            <ul class="space-y-2.5 text-xs font-semibold text-slate-300/90">
-                <li>
-                    <a href="#menu" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
-                        Jelajahi Daftar Kantin
-                    </a>
-                </li>
-                <li>
-                    <a href="#tentang" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
-                        Tentang Layanan Kami
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="hover:text-[#f1a80a] transition duration-200 flex items-center gap-1.5 group">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#661a15] group-hover:bg-[#f1a80a] transition"></span>
-                        Hubungi IT Support Sekolah
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto px-6 lg:px-16 pt-8 text-xs text-slate-400 font-medium gap-4">
-        <div>
-            &copy; 2026 <span class="text-white font-bold">Foody Kantin Digital</span>. Hak Cipta Dilindungi Undang-Undang.
-        </div>
-        <div class="flex gap-4 text-slate-400/60">
-            <span class="text-[10px] uppercase tracking-wider bg-white/5 px-2.5 py-1 rounded-md text-slate-300">v1.0-Beta</span>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+@endsection

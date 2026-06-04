@@ -1,110 +1,172 @@
 @extends('layouts.vendor')
 
 @section('content')
-    <div class="max-w-md mx-auto px-4 pt-[85px] pb-[110px] min-h-screen bg-white">
-        
-        <div class="mb-6">
-            <h3 class="text-[#1e2a5e] font-black text-xl flex items-center gap-2">
-                <span class="w-1.5 h-6 bg-[#7f1d1d] rounded-full"></span>
-                Laporan Penjualan
-            </h3>
-            <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest ml-3">Pantau statistik kantin anda</p>
+    <div class="w-full min-h-screen bg-white px-4 sm:px-6 lg:px-8 pb-34 animate-fade-in">
+
+        {{-- Header Halaman --}}
+        <div
+            class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 mb-6 border-b border-gray-100">
+            <div>
+                <nav class="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                    <span class="flex items-center gap-1"><i class="ti ti-smart-home"></i> Vendor Panel</span>
+                    <i class="ti ti-chevron-right text-[8px]"></i>
+                    <span class="text-[#7f1d1d]">Laporan Keuangan</span>
+                </nav>
+                <h1 class="text-2xl font-black text-gray-900 tracking-tight leading-none flex items-center gap-2">
+                    <span class="w-1.5 h-6 bg-[#7f1d1d] rounded-full"></span>
+                    Rekap Penjualan Toko
+                </h1>
+            </div>
+
+            {{-- Form Filter Rentang Waktu --}}
+            <form action="{{ route('vendor.report.index') }}" method="GET"
+                class="w-full sm:w-auto flex flex-wrap items-center gap-2">
+                <select name="filter" onchange="this.form.submit()"
+                    class="bg-gray-50 border border-gray-200 text-gray-800 text-xs px-4 py-2.5 rounded-xl font-bold uppercase tracking-wider focus:outline-none focus:ring-1 focus:ring-[#7f1d1d]">
+                    <option value="today" {{ $filter == 'today' ? 'selected' : '' }}>Hari Ini</option>
+                    <option value="this_month" {{ $filter == 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
+                    <option value="custom" {{ $filter == 'custom' ? 'selected' : '' }}>Kustom Tanggal</option>
+                </select>
+
+                @if ($filter == 'custom')
+                    <input type="date" name="start_date" value="{{ request('start_date') }}"
+                        class="bg-gray-50 border border-gray-200 text-xs px-4 py-2.5 rounded-xl font-semibold">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}"
+                        class="bg-gray-50 border border-gray-200 text-xs px-4 py-2.5 rounded-xl font-semibold">
+                    <button type="submit"
+                        class="bg-[#1b2563] text-white text-[10px] font-black uppercase px-4 py-2.5 rounded-xl tracking-wider">Cari</button>
+                @endif
+                {{-- Letakkan di dalam form filter atau di samping tombol 'Cari' --}}
+                <a href="{{ route('vendor.report.exportPdf', request()->all()) }}"
+                    class="bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black uppercase px-4 py-2.5 rounded-xl tracking-wider flex items-center gap-1.5 transition-all hover:bg-rose-100 active:scale-95">
+                    <i class="ti ti-file-text text-xs"></i> Export PDF
+                </a>
+            </form>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-[#f8fafc] p-4 rounded-3xl border-2 border-gray-50">
-                <p class="text-gray-400 text-[9px] font-bold uppercase tracking-tighter mb-1">Pendapatan Mei</p>
-                <p class="text-[#1e2a5e] font-black text-base leading-none">Rp 2.450.000</p>
-                <div class="mt-2 flex items-center gap-1 text-green-500 text-[8px] font-bold">
-                    <i class="ti ti-trending-up"></i> +12% dari bulan lalu
+        {{-- GRID STATISTIK UTAMA --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {{-- Total Pendapatan --}}
+            <div
+                class="bg-[#1b2563] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[140px]">
+                <div>
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] text-white/50">Total Pemasukan Bersih</p>
+                    <h2 class="text-3xl font-black tracking-tight mt-2">Rp {{ number_format($totalRevenue, 0, ',', '.') }}
+                    </h2>
+                </div>
+                <p class="text-[10px] font-bold text-white/60 tracking-wide mt-4">
+                    Periode: {{ $startDate->format('d M Y') }} - {{ $endDate->format('d M Y') }}
+                </p>
+                <i class="ti ti-wallet absolute -right-4 -bottom-4 text-8xl text-white/5"></i>
+            </div>
+
+            {{-- Total Pesanan Sukses --}}
+            <div class="bg-gray-50 border border-gray-100 rounded-3xl p-6 flex flex-col justify-between min-h-[140px]">
+                <div>
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Pesanan Berhasil</p>
+                    <h2 class="text-3xl font-black text-gray-900 tracking-tight mt-2">{{ $totalOrders }} Trx</h2>
+                </div>
+                <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center gap-1 mt-4">
+                    <i class="ti ti-circle-check"></i> 100% Selesai & Lunas
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {{-- TABEL RIWAYAT TRANSAKSI (Makan tempat 2 kolom di lg) --}}
+            <div class="lg:col-span-2 space-y-4">
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400 px-1">Rincian Riwayat Nota</h3>
+
+                <div class="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 border-b border-gray-100 text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                                    <th class="p-4">Invoice</th>
+                                    <th class="p-4">Pelanggan</th>
+                                    <th class="p-4">Tipe</th>
+                                    <th class="p-4 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50 text-xs">
+                                @forelse ($orders as $order)
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="p-4 font-black text-gray-800">
+                                            #{{ $order->invoice_number ?? 'INV-' . $order->id }}
+                                            <span
+                                                class="block text-[9px] font-normal text-gray-400 mt-0.5">{{ $order->created_at->format('d/m/Y H:i') }}</span>
+                                        </td>
+                                        <td class="p-4 font-bold text-gray-700">{{ $order->user->name }}</td>
+                                        <td class="p-4">
+                                            <span
+                                                class="text-[9px] font-black uppercase px-2 py-1 rounded-md {{ $order->order_type == 'delivery' ? 'bg-amber-50 text-amber-600' : 'bg-purple-50 text-purple-600' }}">
+                                                {{ $order->order_type }}
+                                            </span>
+                                        </td>
+                                        <td class="p-4 font-black text-right text-gray-900">
+                                            Rp {{ number_format($order->total_price, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="p-8 text-center text-gray-400 font-medium">Tidak ada
+                                            transaksi terkap pada periode ini.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-[#f8fafc] p-4 rounded-3xl border-2 border-gray-50">
-                <p class="text-gray-400 text-[9px] font-bold uppercase tracking-tighter mb-1">Pesanan Selesai</p>
-                <p class="text-[#7f1d1d] font-black text-base leading-none">156 Order</p>
-                <div class="mt-2 flex items-center gap-1 text-gray-400 text-[8px] font-bold">
-                    <i class="ti ti-calendar"></i> Per 8 Mei 2026
-                </div>
-            </div>
-        </div>
+            {{-- PRODUK TERLARIS (Makan tempat 1 kolom di lg) --}}
+            <div class="space-y-4">
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400 px-1">Menu Paling Laris</h3>
 
-        <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-            <button class="px-4 py-2 bg-[#1e2a5e] text-white rounded-xl text-[10px] font-bold whitespace-nowrap shadow-md">Harian</button>
-            <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">Mingguan</button>
-            <button class="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl text-[10px] font-bold whitespace-nowrap">Bulanan</button>
-        </div>
-
-        <div class="bg-[#1e2a5e] p-5 rounded-3xl shadow-lg mb-8">
-            <div class="flex justify-between items-end h-32 gap-2">
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-white/10 rounded-t-lg relative group h-[40%]">
-                        <div class="absolute bottom-0 w-full bg-[#ffc61a] rounded-t-lg transition-all h-[60%] group-hover:h-[80%]"></div>
-                    </div>
-                    <span class="text-[8px] text-white/50 font-bold uppercase">Sen</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-white/10 rounded-t-lg relative h-[60%]">
-                        <div class="absolute bottom-0 w-full bg-[#ffc61a] rounded-t-lg h-[40%]"></div>
-                    </div>
-                    <span class="text-[8px] text-white/50 font-bold uppercase">Sel</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-white/10 rounded-t-lg relative h-[80%]">
-                        <div class="absolute bottom-0 w-full bg-[#ffc61a] rounded-t-lg h-[90%]"></div>
-                    </div>
-                    <span class="text-[8px] text-white/50 font-bold uppercase">Rab</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-white/10 rounded-t-lg relative h-[50%]">
-                        <div class="absolute bottom-0 w-full bg-[#ffc61a] rounded-t-lg h-[70%]"></div>
-                    </div>
-                    <span class="text-[8px] text-white/50 font-bold uppercase">Kam</span>
-                </div>
-                <div class="flex-1 flex flex-col items-center gap-2">
-                    <div class="w-full bg-white/10 rounded-t-lg relative h-[90%]">
-                        <div class="absolute bottom-0 w-full bg-[#ffc61a] rounded-t-lg h-[85%] border-2 border-white"></div>
-                    </div>
-                    <span class="text-[8px] text-white font-black uppercase">Jum</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-5">
-            <h3 class="text-gray-800 font-bold text-sm mb-4 flex items-center gap-2">
-                <span class="w-1 h-4 bg-[#7f1d1d] rounded-full"></span>
-                Produk Terlaris
-            </h3>
-
-            <div class="space-y-3">
-                <div class="flex items-center justify-between p-3 border-2 border-gray-50 rounded-2xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-[#dcfce7] rounded-xl flex items-center justify-center text-xl">🍕</div>
-                        <div>
-                            <p class="text-[11px] font-black text-gray-800 uppercase">Pizza Pepperoni</p>
-                            <p class="text-[9px] text-gray-400 font-bold uppercase">42 Terjual</p>
+                <div class="bg-gray-50/50 border border-gray-100/80 rounded-3xl p-4 space-y-3">
+                    @forelse($topProducts as $index => $prod)
+                        <div
+                            class="bg-white rounded-2xl p-4 flex items-center justify-between shadow-sm border border-gray-50">
+                            <div class="flex items-center gap-3 min-w-0">
+                                {{-- Badge Peringkat --}}
+                                <span
+                                    class="w-5 h-5 flex items-center justify-center bg-amber-50 text-amber-700 font-black text-[10px] rounded-full">
+                                    {{ $index + 1 }}
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-black text-gray-800 truncate">{{ $prod->product_name }}</p>
+                                    <p class="text-[10px] text-gray-400 font-bold mt-0.5">{{ $prod->total_qty }} Porsi
+                                        Terjual</p>
+                                </div>
+                            </div>
+                            <p class="text-xs font-black text-[#7f1d1d] flex-shrink-0">
+                                Rp {{ number_format($prod->total_sales, 0, ',', '.') }}
+                            </p>
                         </div>
-                    </div>
-                    <p class="text-[11px] font-black text-[#1e2a5e]">Rp 630rb</p>
-                </div>
-
-                <div class="flex items-center justify-between p-3 border-2 border-gray-50 rounded-2xl">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-[#fee2e2] rounded-xl flex items-center justify-center text-xl">🍜</div>
-                        <div>
-                            <p class="text-[11px] font-black text-gray-800 uppercase">Sphagetti Meatball</p>
-                            <p class="text-[9px] text-gray-400 font-bold uppercase">38 Terjual</p>
-                        </div>
-                    </div>
-                    <p class="text-[11px] font-black text-[#1e2a5e]">Rp 570rb</p>
+                    @empty
+                        <div class="py-6 text-center text-gray-400 text-xs font-medium">Belum ada menu terjual.</div>
+                    @endforelse
                 </div>
             </div>
         </div>
-
     </div>
 
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
     </style>
 @endsection
