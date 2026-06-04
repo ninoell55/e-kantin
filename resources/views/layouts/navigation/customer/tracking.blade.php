@@ -57,7 +57,7 @@ tailwind.config = {
         </h2>
     </div>
 
-    <a href="/menu" class="text-primary font-semibold text-sm">
+    <a href="{{ route('customer.menu') }}" class="text-primary font-semibold text-sm">
         ← Menu
     </a>
 

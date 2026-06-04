@@ -72,6 +72,7 @@
       <div class="flex gap-3 justify-center mt-6">
         <button class="bg-secondary text-primary font-bold px-5 py-2.5 rounded-xl text-sm hover:brightness-105 transition-all">Pesan Sekarang</button>
         <button class="border border-white/30 text-white font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-white/10 transition-all">Lihat Menu</button>
+       <a href="/customer/tracking"><button class="border border-white/30 text-white font-semibold px-5 py-2.5 rounded-xl text-sm hover:bg-white/10 transition-all">Lihat Pesanan</button></a> 
       </div>
     </div>
   </div>
