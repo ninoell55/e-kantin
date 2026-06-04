@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('navigation')
-    @include('layouts.navigation.customer')
-@endsection
-
 @section('content')
-    <div class="main-content">
+    @include('navigation.customer.top')
+    
+    <main class="pb-20">  {{-- Padding bottom buat floating nav --}}
         @yield('customer-content')
-    </div>
+    </main>
+    
+    @include('navigation.customer.bottom')
 @endsection

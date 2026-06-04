@@ -2,6 +2,7 @@
     class="fixed top-0 left-0 right-0 bg-secondary/95 backdrop-blur-md text-white shadow-lg z-50 border-b border-white/10">
     <div class="container mx-auto flex items-center justify-between gap-4 px-4 py-3 max-w-md">
 
+    
         <div class="shrink-0 transition-transform hover:scale-105">
             <div
                 class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-inner border border-white/20">
