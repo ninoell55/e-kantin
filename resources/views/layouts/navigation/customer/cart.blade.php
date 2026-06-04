@@ -49,26 +49,46 @@
       <!-- Cart Items -->
       <div class="flex flex-col gap-4 flex-1">
 
+
+
+
+      @php
+$subtotal = 0;
+@endphp
+@foreach ($cart as $item)
         <!-- Item 1 -->
         <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm">
           <div class="flex gap-4 items-start">
             <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden flex-shrink-0">
-              <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=600&auto=format&fit=crop" alt="Mie Ayam" class="w-full h-full object-cover">
+              @if(!empty($item['image']))
+    <img src="{{ asset('storage/' . $item['image']) }}" alt="">
+@else
+    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=600&auto=format&fit=crop" alt="">
+@endif
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-dark text-sm md:text-base">Mie Ayam Special</h3>
-              <span class="inline-block mt-1 mb-2 bg-blue-50 text-primary text-xs font-semibold px-2.5 py-1 rounded-full">🍴 Stand Bu Rina</span>
-              <p class="text-secondary font-bold text-lg md:text-xl">Rp12.000</p>
+              <h3 class="font-semibold text-dark text-sm md:text-base">{{ $item['name'] }}</h3>
+              <span class="inline-block mt-1 mb-2 bg-blue-50 text-primary text-xs font-semibold px-2.5 py-1 rounded-full">🍴 {{ $item['shops'] }}</span>
+              <p class="text-secondary font-bold text-lg md:text-xl">Rp{{number_format($item['price'])}}</p>
             </div>
             <div class="flex items-center gap-2 flex-shrink-0">
-              <button onclick="changeQty(this,-1)" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center hover:bg-danger transition-colors">−</button>
-              <span class="font-bold text-dark w-5 text-center qty text-sm">1</span>
-              <button onclick="changeQty(this,1)" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center hover:bg-primary/80 transition-colors">+</button>
+              <form action="{{ url('customer/cart/update/'.$item['id']) }}" method="POST">
+                @csrf
+              <button name="action" value="minus" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center hover:bg-danger transition-colors">−</button>
+              <span class="font-bold text-dark w-5 text-center qty text-sm">{{ $item['qty'] }}</span>
+              <button name="action" value="plus" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center hover:bg-primary/80 transition-colors">+</button>
+              </form>
             </div>
           </div>
         </div>
+        @php
+        $subtotal += $item['price'] * $item['qty'];
+    @endphp
+@endforeach
 
-        <!-- Item 2 -->
+
+        <!-- 
+        Item 2 
         <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm">
           <div class="flex gap-4 items-start">
             <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden flex-shrink-0">
@@ -85,18 +105,22 @@
               <button onclick="changeQty(this,1)" class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-primary text-white font-bold text-base flex items-center justify-center hover:bg-primary/80 transition-colors">+</button>
             </div>
           </div>
+          -->
         </div>
 
         <!-- Tambah item -->
+         <a href="{{ url('/customer/menu#menu-grid') }}">
         <div class="border-2 border-dashed border-slate-200 rounded-2xl p-5 text-center text-sm text-gray-400 cursor-pointer hover:border-primary hover:text-primary transition-all group">
           <span class="text-xl block mb-1 group-hover:scale-110 transition-transform inline-block">+</span>
           Tambah item lainnya
         </div>
+        </a>
 
       </div>
 
       <!-- Summary -->
       <div class="lg:w-80 flex flex-col gap-4">
+
 
         <!-- Fast Checkout Info -->
         <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex gap-3 items-start">
@@ -106,27 +130,40 @@
           </p>
         </div>
 
+                @php
+$totalItem = 0;
+$subtotal = 0;
+@endphp
         <!-- Order Summary -->
         <div class="bg-white rounded-2xl p-5 shadow-sm">
           <h2 class="text-primary font-bold text-base md:text-lg mb-5">Ringkasan Pesanan</h2>
 
+          @foreach ($cart as $item)
+        @php
+        $totalItem += $item['qty'];
+        $subtotal += $item['price'] * $item['qty'];
+    @endphp
           <div class="flex flex-col gap-3 text-sm">
             <div class="flex justify-between text-dark/70">
-              <span>Mie Ayam Special × <span id="qty1">1</span></span>
-              <span>Rp<span id="sub1">12.000</span></span>
+              <span>{{ $item['name'] }} × {{ $item['qty'] }}</span></span>
+              <span>Rp<span id="sub1">{{ number_format($item['price']*$item['qty']) }}</span></span>
             </div>
+            @endforeach
+
+            <!--
             <div class="flex justify-between text-dark/70">
               <span>Burger Crispy × <span id="qty2">2</span></span>
               <span>Rp<span id="sub2">30.000</span></span>
             </div>
+            -->
             <div class="w-full h-px bg-slate-100 my-1"></div>
             <div class="flex justify-between text-dark/70">
               <span>Total Item</span>
-              <span id="totalItems" class="font-semibold">3</span>
+              <span id="totalItems" class="font-semibold">{{$totalItem}}</span>
             </div>
             <div class="flex justify-between text-dark/70">
               <span>Subtotal</span>
-              <span>Rp<span id="subtotal">42.000</span></span>
+              <span>Rp<span id="subtotal">{{number_format($subtotal)}}</span>
             </div>
             <div class="flex justify-between text-dark/70">
               <span>Biaya Admin</span>
@@ -136,11 +173,11 @@
 
           <div class="border-t-2 border-slate-100 mt-4 pt-4 flex justify-between items-center">
             <span class="font-bold text-dark">Total</span>
-            <span class="font-bold text-xl text-primary">Rp<span id="total">42.000</span></span>
+            <span class="font-bold text-xl text-primary">Rp<span id="total">{{number_format($subtotal)}}</span></span>
           </div>
 
           <a href="/customer/checkout">
-            <button class="w-full mt-5 py-4 rounded-2xl bg-secondary text-primary font-bold text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all">
+            <button type="submit" class="w-full mt-5 py-4 rounded-2xl bg-secondary text-primary font-bold text-sm tracking-wide hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all">
               Checkout Sekarang →
             </button>
           </a>
