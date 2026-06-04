@@ -28,10 +28,10 @@
     .status-paid     { background: #e6f7ee !important; color: #15803d !important; }
     .status-unpaid   { background: #fff7e6 !important; color: #d97706 !important; }
     .status-overdue  { background: #fef2f2 !important; color: #dc2626 !important; }
-    .action-group { display: flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important; flex-wrap: wrap !important; }
-    .btn-action { display: inline-flex !important; align-items: center !important; gap: 5px !important; padding: 6px 12px !important; border-radius: 8px !important; font-size: 12px !important; font-weight: 500 !important; border: none !important; cursor: pointer !important; font-family: var(--font) !important; text-decoration: none !important; transition: opacity 0.15s !important; }
+    .action-group { display: flex !important; align-items: center !important; justify-content: center !important; gap: 5px !important; flex-wrap: nowrap !important; }
+    .btn-action { display: inline-flex !important; align-items: center !important; gap: 4px !important; padding: 5px 10px !important; border-radius: 8px !important; font-size: 11px !important; font-weight: 500 !important; border: none !important; cursor: pointer !important; font-family: var(--font) !important; text-decoration: none !important; transition: opacity 0.15s !important; white-space: nowrap !important; }
     .btn-action:hover { opacity: 0.85 !important; }
-    .btn-action svg { width: 13px !important; height: 13px !important; }
+    .btn-action svg { width: 12px !important; height: 12px !important; }
     .btn-edit     { background: #e8eeff !important; color: #3d4fd6 !important; }
     .btn-delete   { background: #fef2f2 !important; color: #dc2626 !important; }
     .btn-ban      { background: #fff7e6 !important; color: #d97706 !important; }
@@ -108,7 +108,7 @@
                 <th class="center">Status Sewa</th>
                 <th class="center">Sewa</th>
                 <th class="center">Bergabung</th>
-                <th class="center" style="width:220px">Aksi</th>
+                <th class="center" style="width:260px">Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -176,7 +176,7 @@
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                                     </svg>
-                                    Nonaktifkan
+                                    Suspend
                                 </button>
                             </form>
                         @endif
