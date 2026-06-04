@@ -44,7 +44,7 @@
                         <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Akun Saya</p>
                         <p class="text-sm font-bold text-slate-800 truncate">{{ Auth::user()->email }}</p>
                     </div>
-                    <a href="{{ route('vendor.profile.edit') }}"
+                    <a href="{{ route('profile.edit') }}"
                         class="flex items-center gap-2 px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 font-semibold border-b border-slate-50">
                         <i class="ti ti-user text-base text-slate-400"></i> Edit Profil
                     </a>
@@ -84,7 +84,7 @@
                     <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Akun Saya</p>
                     <p class="text-sm font-bold text-slate-800 truncate">{{ Auth::user()->email }}</p>
                 </div>
-                <a href="{{ route('vendor.profile.edit') }}"
+                <a href="{{ route('profile.edit') }}"
                     class="flex items-center gap-2 px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 font-semibold border-b border-slate-100 transition-colors">
                     <i class="ti ti-user text-base text-slate-400"></i> Edit Profil
                 </a>

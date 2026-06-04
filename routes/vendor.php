@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Vendor\DashboardController;
 use App\Http\Controllers\Vendor\OrderController;
 use App\Http\Controllers\Vendor\ProductController;
@@ -18,6 +17,7 @@ Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->g
     Route::put('/shop/settings', [ShopController::class, 'update'])->name('shop.update');
     Route::patch('/shop/toggle-status', [ShopController::class, 'toggleStatus'])->name('shop.toggle-status');
 
+    // Route Manajemen Tagihan
     Route::get('/bills', [ShopBillController::class, 'index'])->name('bills.index');
     Route::post('/bills/{id}/pay', [ShopBillController::class, 'pay'])->name('bills.pay');
 
@@ -31,15 +31,13 @@ Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->g
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('product.destroy'); // Hapus Produk
     Route::patch('/products/{product}/toggle', [DashboardController::class, 'toggleStatus'])->name('product.toggle-status');
 
+    // Route Manajemen Pesanan
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
     Route::put('/orders/{order}/verify-payment', [OrderController::class, 'verifyPayment'])->name('order.verifyPayment');
 
+    // Route Laporan Penjualan
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/export-pdf', [ReportController::class, 'exportPdf'])->name('report.exportPdf');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
