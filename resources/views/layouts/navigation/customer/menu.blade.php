@@ -29,7 +29,7 @@
     }
   }
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swpap" rel="stylesheet">
 <style>
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -51,7 +51,9 @@
 <a href="{{ route('customer.cart') }}">
   <button class="bg-primary text-white px-3 md:px-5 py-2 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all flex items-center gap-1.5">
       🛒 <span class="hidden sm:inline">Keranjang</span>
-      <span class="bg-secondary text-primary text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
+      <span class="bg-secondary text-primary text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+        {{ collect(session('cart', []))->sum('qty') }}
+   </span>
   </button>
 </a>
     </div>
@@ -208,12 +210,17 @@
         <div class="p-3 md:p-5">
           <span class="text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">{{$product->category->name}}</span>
           <h3 class="font-semibold text-dark text-sm mt-1.5 mb-0.5">{{ $product->name }}</h3>
-          <p class="text-secondary font-bold text-base md:text-xl mb-0.5">RP {{ $product->price }}</p>
+          <p class="text-secondary font-bold text-base md:text-xl mb-0.5">RP {{ number_format($product->price) }}</p>
           <p class="text-gray-400 text-xs mb-3">{{ $product->shop->name }}</p>
           <div class="flex justify-between items-center">
             @if ($product->is_available && $product->shop->is_open)
             <span class="text-green-600 font-semibold text-xs">● Ada</span>
-            <button class="bg-primary text-white px-3 py-1.5 rounded-xl text-xs font-semibold">+ Pesan</button>
+
+            <form action="{{ url('customer/cart/add/'.$product->id) }}" method="POST">
+            @csrf
+            <button type="submit" class="bg-primary text-white px-3 py-1.5 rounded-xl text-xs font-semibold">+ Pesan</button>
+            </form>
+
             @else
             <span class="text-red-600 font-semibold text-xs">X &nbsp; &nbsp; Tidak ada</span>
             <button disabled class="bg-gray-100 text-gray-400 px-3 py-1.5 rounded-xl text-xs font-semibold cursor-not-allowed">Tidak ada</button>

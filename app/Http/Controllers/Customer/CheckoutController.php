@@ -6,69 +6,141 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
-    //menampilkan halaman checkout
-    public function index(){
-        //ambil cart dari session
-        $cart=session()->get('cart',[]);
-        //hitung total
-        $total=0;
-        foreach ($cart as $item){
-            $total += $item['price']*$item['quantity'];
-        }
-        return view('customer.checkout.index',compact('cart', 'total'));
+    public function store(Request $request)
+{
+    $request->validate([
+        'customer_name' => ['required', 'string'],
+        'customer_class' => ['required', 'string'],
+        'order_type' => ['required', 'in:pickup,delivery'],
+        'payment_method' => ['required', 'in:cash,transfer'],
+        'delivery_location' => ['nullable', 'string'],
+        'notes' => ['nullable', 'string'],
+    ]);
+
+    $cart = session()->get('cart', []);
+
+    if (empty($cart)) {
+        return back()->with('error', 'Keranjang kosong.');
     }
 
-    //simpan checkout
-    public function store(Request $request){
-        //validasi input
-        $request->validate(['payment_method'=>'required|in:cash,transfer',
-        'notes'=>'nullable|string',
-        'order_type'=>'required|in:pickup,delivery',
-        'delivery_location'=>'nullable|string|max:255'
-        ]);
-        //ambil cart dari session
-        $cart = session()->get('cart',[]);
-        //cegah checkout jika cart kosong
-        if (count($cart)<1){
-            return back()->with('error','keranjang kosong');
-        }
+    DB::transaction(function () use ($request, $cart) {
 
-        //hitung total
-        $total =0;
-        foreach ($cart as $item){
-            $total += $item['price']*$item['quantity'];
-        }
+        $groupedCart = collect($cart)->groupBy('shop_id');
 
-        //buat order
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'shop_id'=>reset($cart)['shop_id'],
-            'total_price'=>$total,
-            'payment_method'=>$request->payment_method,
-            'order_type'=>$request->order_type,
-            'payment_status'=>'unpaid',
-            'status'=>'pending',
-            'notes'=>$request->notes,
-        ]);
-        //simpan order items
-        foreach ($cart as $item){
-            OrderItem::create([
-                'order_id'=>$order->id,
-                'product_id'=>$item['product_id'],
-                'product_name'=>$item['name'],
-                'quantity'=>$item['quantity'],
-                'price'=>$item['price'],
+        foreach ($groupedCart as $shopId => $items) {
+
+            $subtotal = 0;
+
+            foreach ($items as $item) {
+                $subtotal += $item['price'] * $item['qty'];
+            }
+
+            $deliveryFee =
+                $request->order_type === 'delivery'
+                ? 2000
+                : 0;
+
+            $totalPrice = $subtotal + $deliveryFee;
+
+            $lastOrder = Order::latest('id')->first();
+
+            $nextNumber = $lastOrder
+                ? $lastOrder->id + 1
+                : 1;
+
+            $invoiceNumber =
+                'INV-' .
+                str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+            $paymentStatus =
+                $request->payment_method === 'cash'
+                ? 'unpaid'
+                : 'verifying';
+
+            $finalNotes =
+                "Nama: {$request->customer_name}\n" .
+                "Kelas: {$request->customer_class}\n\n" .
+                ($request->notes ?? '');
+
+            $order = Order::create([
+                'user_id' => auth()->id(),
+                'shop_id' => $shopId,
+                'invoice_number' => $invoiceNumber,
+
+                'order_type' => $request->order_type,
+
+                'delivery_location' =>
+                    $request->delivery_location,
+
+                'delivery_fee' => $deliveryFee,
+
+                'total_price' => $totalPrice,
+
+                'payment_method' =>
+                    $request->payment_method,
+
+                'payment_status' =>
+                    $paymentStatus,
+
+                'status' => 'pending',
+
+                'notes' => $finalNotes,
             ]);
-        }
 
-        //hapus session cart
-        session()->forget('cart');
-        //redirect
-        return redirect()
-        ->route('customer2.cart.index')
-        ->with('success', 'pesanan berhasil dibuat');
+            foreach ($items as $item) {
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+
+                    'product_id' => $item['id'],
+
+                    'product_name' => $item['name'],
+
+                    'product_image_path' =>
+                        $item['image'] ?? null,
+
+                    'quantity' => $item['qty'],
+
+                    'price' => $item['price'],
+                ]);
+            }
+        }
+    });
+
+    session()->forget('cart');
+
+    return redirect('/customer/tracking')
+        ->with('success', 'Pesanan berhasil dibuat.');
+}
+
+public function index()
+{
+    $cart = session()->get('cart', []);
+
+    if (empty($cart)) {
+        return redirect('/customer/cart')
+            ->with('error', 'Keranjang kosong.');
     }
+
+    $totalItem = 0;
+    $subtotal = 0;
+
+    foreach ($cart as $item) {
+        $totalItem += $item['qty'];
+        $subtotal += $item['price'] * $item['qty'];
+    }
+
+    return view(
+        'layouts.navigation.customer.checkout',
+        compact(
+            'cart',
+            'totalItem',
+            'subtotal'
+        )
+    );
+}
 }
