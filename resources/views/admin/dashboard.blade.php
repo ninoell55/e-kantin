@@ -3,240 +3,178 @@
 
 @section('title', 'Dashboard - Kantin Admin')
 
-@section('styles')
-<style>
-    .dashboard-container { animation: fadeUp 0.4s ease both; max-width: 100%; overflow-x: hidden; }
-    
-    .dash-header { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 24px !important; flex-wrap: wrap !important; gap: 16px !important; }
-    .dash-welcome h1 { font-size: 24px !important; font-weight: 700 !important; color: var(--navy) !important; margin: 0 0 4px 0 !important; }
-    .dash-welcome p { font-size: 13px !important; color: var(--gray-400) !important; margin: 0 !important; }
-    .dash-filters { display: flex !important; align-items: center !important; gap: 12px !important; }
-    .select-period { padding: 10px 32px 10px 14px !important; border: 1.5px solid #e8eaf0 !important; border-radius: 12px !important; font-size: 13px !important; font-weight: 500 !important; color: var(--navy) !important; background: #fff !important; appearance: none !important; outline: none !important; cursor: pointer !important; }
-
-    /* BENTO GRID */
-    .bento-grid { display: grid !important; grid-template-columns: 4.5fr 7.5fr !important; gap: 20px !important; margin-bottom: 20px !important; }
-    .stat-2x2-grid { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; height: 100% !important; }
-
-    /* STAT CARD */
-    .stat-card { background: #fff !important; border-radius: 20px !important; border: 1px solid #e8eaf0 !important; padding: 20px !important; display: flex !important; flex-direction: column !important; justify-content: space-between !important; min-height: 140px !important; transition: transform 0.2s, box-shadow 0.2s !important; }
-    .stat-card:hover { transform: translateY(-3px) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important; }
-    .stat-top { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 12px !important; }
-    .stat-title { font-size: 12px !important; font-weight: 600 !important; color: var(--gray-400) !important; }
-
-    /* TOMBOL PANAH */
-    .stat-btn {
-        width: 36px !important; height: 36px !important; border-radius: 50% !important;
-        display: flex !important; align-items: center !important; justify-content: center !important;
-        text-decoration: none !important; transition: background 0.2s, transform 0.2s !important;
-        flex-shrink: 0 !important;
-    }
-    .stat-btn svg { width: 16px !important; height: 16px !important; }
-    .stat-btn-blue { background: #f4f5f9 !important; color: var(--navy) !important; }
-    .stat-btn-gray { background: #f4f5f9 !important; color: var(--navy) !important; }
-    .stat-btn:hover { background: #730f00 !important; color: #fff !important; transform: scale(1.08) !important; }
-
-    .stat-bottom { display: flex !important; flex-direction: column !important; gap: 4px !important; }
-    .stat-val { font-size: 22px !important; font-weight: 700 !important; color: var(--navy) !important; margin: 0 !important; letter-spacing: -0.02em !important; }
-    .stat-note { font-size: 11px !important; color: var(--gray-400) !important; }
-
-    /* CARD */
-    .card { background: #fff !important; border-radius: 20px !important; border: 1px solid #e8eaf0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
-    .card-header { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 20px 24px 16px !important; }
-    .card-title { font-size: 16px !important; font-weight: 700 !important; color: var(--navy) !important; margin: 0 !important; }
-    .card-sub { font-size: 12px !important; color: var(--gray-400) !important; }
-    .card-action-btn { width: 32px !important; height: 32px !important; border-radius: 50% !important; background: #f4f5f9 !important; color: var(--navy) !important; display: flex !important; align-items: center !important; justify-content: center !important; text-decoration: none !important; transition: background 0.2s, color 0.2s !important; flex-shrink: 0 !important; }
-    .card-action-btn svg { width: 14px !important; height: 14px !important; }
-    .card-action-btn:hover { background: #730f00 !important; color: #fff !important; }
-    .card-body { padding: 0 24px 24px !important; flex: 1 !important; display: flex !important; flex-direction: column !important; justify-content: center !important; }
-
-    /* BAR CHART */
-    .chart-container { display: flex !important; gap: 12px !important; align-items: stretch !important; height: 200px !important; width: 100% !important; margin-top: 10px !important; }
-    .chart-y-axis { display: flex !important; flex-direction: column !important; justify-content: space-between !important; padding-bottom: 24px !important; text-align: right !important; width: 45px !important; }
-    .axis-val { font-size: 10px !important; color: var(--gray-400) !important; font-weight: 600 !important; }
-    .chart-bars-wrapper { flex: 1 !important; position: relative !important; display: flex !important; align-items: flex-end !important; gap: 8px !important; border-bottom: 1px dashed #e8eaf0 !important; padding-bottom: 4px !important; }
-    .gridline { position: absolute !important; left: 0 !important; right: 0 !important; border-top: 1px dashed #f0f1f5 !important; z-index: 1 !important; pointer-events: none !important; }
-    .bar-col { flex: 1 !important; height: 100% !important; display: flex !important; flex-direction: column !important; justify-content: flex-end !important; align-items: center !important; z-index: 2 !important; }
-    .bar-track { width: 100% !important; height: 100% !important; display: flex !important; align-items: flex-end !important; justify-content: center !important; }
-    .bar-fill { width: 100% !important; max-width: 38px !important; border-radius: 6px 6px 0 0 !important; min-height: 4px !important; transition: height 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important; position: relative !important; cursor: pointer !important; }
-    .bar-fill:hover { filter: brightness(0.9) !important; }
-    .bar-tooltip { display: none !important; position: absolute !important; bottom: calc(100% + 8px) !important; left: 50% !important; transform: translateX(-50%) !important; background: var(--navy) !important; color: #fff !important; font-size: 10px !important; font-weight: 600 !important; padding: 5px 9px !important; border-radius: 6px !important; white-space: nowrap !important; z-index: 20 !important; }
-    .bar-fill:hover .bar-tooltip { display: block !important; }
-    .bar-label { font-size: 10px !important; font-weight: 600 !important; color: var(--gray-400) !important; margin-top: 8px !important; text-transform: uppercase !important; }
-
-    /* VENDOR TABLE */
-    .vendor-table { width: 100% !important; border-collapse: collapse !important; font-size: 13px !important; }
-    .vendor-table th { padding: 12px 0 !important; font-size: 11px !important; font-weight: 600 !important; color: var(--gray-400) !important; text-transform: uppercase !important; border-bottom: 1.5px solid #e8eaf0 !important; }
-    .vendor-table td { padding: 13px 0 !important; color: var(--navy) !important; border-bottom: 1px dashed #f0f1f5 !important; vertical-align: middle !important; }
-    .vendor-table tr:last-child td { border-bottom: none !important; }
-    .status-pill { display: inline-flex !important; padding: 4px 10px !important; border-radius: 8px !important; font-size: 10px !important; font-weight: 700 !important; }
-    .status-paid    { background: #e6f7ee !important; color: #16a34a !important; }
-    .status-unpaid  { background: #fff7e6 !important; color: #d97706 !important; }
-    .status-overdue { background: #fef2f2 !important; color: #dc2626 !important; }
-
-    /* DONUT */
-    .donut-layout { display: flex !important; align-items: center !important; justify-content: center !important; gap: 40px !important; margin-top: 10px !important; }
-    .donut-svg-wrap { position: relative !important; width: 160px !important; height: 160px !important; flex-shrink: 0 !important; }
-    .donut-legend { display: flex !important; flex-direction: column !important; gap: 14px !important; flex: 1 !important; }
-    .legend-row { display: flex !important; align-items: center !important; justify-content: space-between !important; }
-    .legend-left { display: flex !important; align-items: center !important; gap: 10px !important; }
-    .legend-dot { width: 12px !important; height: 12px !important; border-radius: 50% !important; }
-    .legend-lbl { color: var(--gray-400) !important; font-size: 13px !important; font-weight: 500 !important; }
-    .legend-val { font-weight: 700 !important; color: var(--navy) !important; font-size: 14px !important; }
-
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-</style>
-@endsection
-
 @section('content')
-<div class="dashboard-container">
+<div class="animate-[fadeUp_0.4s_ease_both] w-full text-[#0B132B]">
 
     {{-- HEADER --}}
-    <div class="dash-header">
-        <div class="dash-welcome">
-            <h1>Hello, {{ Auth::user()->name }}! 👋</h1>
-            <p>Berikut adalah ringkasan performa e-kantin hari ini.</p>
+    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-bold pt-1 leading-relaxed">
+                Hello, {{ Auth::user()->name }}! <span class="inline-block ml-1">👋</span>
+            </h1>
+            <p class="text-sm text-gray-500">Berikut adalah ringkasan performa e-kantin hari ini.</p>
         </div>
     </div>
 
-    {{-- BENTO GRID --}}
-    <div class="bento-grid">
+    {{-- ================= BARIS 1: STATS & CHART ================= --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-5">
+        
+        {{-- KIRI: 4 STAT CARDS (Makan 5 Kolom, tanpa h-full supaya tinggi menyesuaikan otomatis) --}}
+        <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-        {{-- KIRI: 4 STAT CARDS 2x2 --}}
-        <div class="stat-2x2-grid">
-
-            {{-- Total Pembayaran → invoice --}}
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-title">Total Pembayaran</span>
-                    <a href="{{ route('admin.invoice.index') }}" class="stat-btn stat-btn-blue" title="Lihat Invoice">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            {{-- Total Pembayaran --}}
+            <div class="bg-white rounded-2xl border border-[#e8eaf0] p-5 flex flex-col justify-between transition-all hover:shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Pembayaran</span>
+                    <a href="{{ route('admin.invoice.index') }}" class="w-8 h-8 rounded-full flex items-center justify-center bg-[#f4f5f9] text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                         </svg>
                     </a>
                 </div>
-                <div class="stat-bottom">
-                    <h3 class="stat-val">Rp {{ number_format($totalTagihan ?? 0, 0, ',', '.') }}</h3>
-                    <span class="stat-note">Bulan ini</span>
+                <div>
+                    <h3 class="text-2xl font-bold pt-1 leading-relaxed">Rp {{ number_format($totalTagihan ?? 0, 0, ',', '.') }}</h3>
+                    <span class="text-xs text-gray-400">Bulan ini</span>
                 </div>
             </div>
 
-            {{-- Total Penjual → vendor --}}
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-title">Total Penjual</span>
-                    <a href="{{ route('admin.vendor.index') }}" class="stat-btn stat-btn-gray" title="Kelola Penjual">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            {{-- Total Penjual --}}
+            <div class="bg-white rounded-2xl border border-[#e8eaf0] p-5 flex flex-col justify-between transition-all hover:shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Penjual</span>
+                    <a href="{{ route('admin.vendor.index') }}" class="w-8 h-8 rounded-full flex items-center justify-center bg-[#f4f5f9] text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                         </svg>
                     </a>
                 </div>
-                <div class="stat-bottom">
-                    <h3 class="stat-val">{{ $totalPenjual ?? 0 }}</h3>
-                    <span class="stat-note">Vendor terdaftar</span>
+                <div>
+                    <h3 class="text-2xl font-bold pt-1 leading-relaxed">{{ $totalPenjual ?? 0 }}</h3>
+                    <span class="text-xs text-gray-400">Vendor terdaftar</span>
                 </div>
             </div>
 
-            {{-- Total Kategori → category --}}
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-title">Total Kategori</span>
-                    <a href="{{ route('admin.category.index') }}" class="stat-btn stat-btn-gray" title="Kelola Kategori">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            {{-- Total Kategori --}}
+            <div class="bg-white rounded-2xl border border-[#e8eaf0] p-5 flex flex-col justify-between transition-all hover:shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Kategori</span>
+                    <a href="{{ route('admin.category.index') }}" class="w-8 h-8 rounded-full flex items-center justify-center bg-[#f4f5f9] text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                         </svg>
                     </a>
                 </div>
-                <div class="stat-bottom">
-                    <h3 class="stat-val">{{ $totalKategori ?? 0 }}</h3>
-                    <span class="stat-note">Kategori menu</span>
+                <div>
+                    <h3 class="text-2xl font-bold pt-1 leading-relaxed">{{ $totalKategori ?? 0 }}</h3>
+                    <span class="text-xs text-gray-400">Kategori menu</span>
                 </div>
             </div>
 
-            {{-- Total Pengguna → costumer --}}
-            <div class="stat-card">
-                <div class="stat-top">
-                    <span class="stat-title">Total Pengguna</span>
-                    <a href="{{ route('admin.costumer.index') }}" class="stat-btn stat-btn-gray" title="Kelola Pengguna">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            {{-- Total Pengguna --}}
+            <div class="bg-white rounded-2xl border border-[#e8eaf0] p-5 flex flex-col justify-between transition-all hover:shadow-md">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Pengguna</span>
+                    <a href="{{ route('admin.costumer.index') }}" class="w-8 h-8 rounded-full flex items-center justify-center bg-[#f4f5f9] text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                         </svg>
                     </a>
                 </div>
-                <div class="stat-bottom">
-                    <h3 class="stat-val">{{ $totalPengguna ?? 0 }}</h3>
-                    <span class="stat-note">Customer aktif</span>
+                <div>
+                    <h3 class="text-2xl font-bold pt-1 leading-relaxed">{{ $totalPengguna ?? 0 }}</h3>
+                    <span class="text-xs text-gray-400">Customer aktif</span>
                 </div>
             </div>
 
         </div>
 
-        {{-- KANAN: BAR CHART --}}
-        <div class="card">
-            <div class="card-header">
+        {{-- KANAN: BAR CHART (Dengan Fix Tinggi Pasti agar Bar tidak melar) --}}
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-[#e8eaf0] p-6 flex flex-col">
+            <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="card-title">Pemasukan</h2>
-                    <span class="card-sub">Statistik Tahun {{ now()->year }}</span>
+                    <h2 class="text-lg font-bold pt-1 leading-relaxed">Pemasukan</h2>
+                    <span class="text-xs text-gray-400">Statistik Tahun {{ now()->year }}</span>
                 </div>
-                <a href="{{ route('admin.invoice.index') }}" class="card-action-btn" title="Lihat Invoice">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <a href="{{ route('admin.invoice.index') }}" class="w-9 h-9 rounded-full bg-[#f4f5f9] flex items-center justify-center text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                     </svg>
                 </a>
             </div>
-            <div class="card-body">
-                @php
-                    $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-                    $chartData   = array_slice($monthlyRevenue ?? array_fill(0, 12, 0), 4, 8);
-                    $chartMonths = array_slice($months, 4, 8);
-                    $maxRev = max($chartData) ?: 1;
-                    $ySteps = [$maxRev, $maxRev * 0.66, $maxRev * 0.33, 0];
-                @endphp
-                <div class="chart-container">
-                    <div class="chart-y-axis">
-                        @foreach($ySteps as $step)
-                            <span class="axis-val">{{ $step >= 1000000 ? number_format($step/1000000,1).'M' : number_format($step/1000,0).'K' }}</span>
-                        @endforeach
-                    </div>
-                    <div class="chart-bars-wrapper">
-                        <div class="gridline" style="top:0%;"></div>
-                        <div class="gridline" style="top:33%;"></div>
-                        <div class="gridline" style="top:66%;"></div>
+            
+            @php
+                $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+                $chartData   = array_slice($monthlyRevenue ?? array_fill(0, 12, 0), 4, 8);
+                $chartMonths = array_slice($months, 4, 8);
+                $maxRev = max($chartData) ?: 1;
+                $ySteps = [$maxRev, $maxRev * 0.66, $maxRev * 0.33, 0];
+            @endphp
+            
+            {{-- Wrapper chart dengan tinggi fix 240px agar persen height aman --}}
+            <div class="flex h-[240px] w-full gap-3 mt-auto">
+                <div class="flex flex-col justify-between items-end pb-[26px] text-[10px] text-gray-400 font-semibold py-1 w-9 shrink-0">
+                    @foreach($ySteps as $step)
+                        <span>{{ $step >= 1000000 ? number_format($step/1000000,1).'M' : number_format($step/1000,0).'K' }}</span>
+                    @endforeach
+                </div>
+                
+                <div class="flex-1 relative">
+                    <div class="absolute top-0 bottom-[26px] left-0 right-0 flex flex-col justify-between pointer-events-none">
+                        <div class="border-t border-dashed border-[#f0f1f5] w-full"></div>
+                        <div class="border-t border-dashed border-[#f0f1f5] w-full"></div>
+                        <div class="border-t border-dashed border-[#f0f1f5] w-full"></div>
+                        <div class="border-t border-dashed border-[#e8eaf0] w-full"></div> </div>
+                    
+                    <div class="absolute inset-0 flex justify-around">
                         @foreach($chartMonths as $i => $month)
                         @php $pct = ($chartData[$i] / $maxRev) * 100; @endphp
-                        <div class="bar-col">
-                            <div class="bar-track">
-                                <div class="bar-fill" data-height="{{ max($pct, 4) }}" style="height:0%; background:#6b8afc !important;">
-                                    <div class="bar-tooltip">Rp {{ number_format($chartData[$i], 0, ',', '.') }}</div>
+                        <div class="h-full flex flex-col items-center w-10 relative group">
+                            
+                            <div class="w-full h-[calc(100%-26px)] flex items-end relative z-10 px-1">
+                                <div class="hidden group-hover:block absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-[#0B132B] text-white text-[10px] font-semibold py-1.5 px-2.5 rounded shadow-lg whitespace-nowrap z-50">
+                                    Rp {{ number_format($chartData[$i], 0, ',', '.') }}
                                 </div>
+                                <div class="w-full bg-[#6b8afc] rounded-t-md transition-all duration-1000 ease-out cursor-pointer hover:bg-[#5271e0]" 
+                                     data-height="{{ max($pct, 2) }}" 
+                                     style="height:0%;"></div>
                             </div>
-                            <span class="bar-label">{{ $month }}</span>
+                            
+                            <div class="h-[26px] flex items-end pb-1 justify-center text-[10px] text-gray-400 font-semibold uppercase">
+                                {{ $month }}
+                            </div>
+                            
                         </div>
                         @endforeach
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+
+    {{-- ================= BARIS 2: TABLE & DONUT ================= --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
         {{-- KIRI BAWAH: VENDOR TABLE --}}
-        <div class="card">
-            <div class="card-header">
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-[#e8eaf0] p-6 flex flex-col">
+            <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h2 class="card-title">Daftar Vendor & Pembayaran</h2>
-                    <span class="card-sub">{{ count($vendors ?? []) }} vendor terdaftar</span>
+                    <h2 class="text-lg font-bold pt-1 leading-relaxed">Daftar Vendor & Pembayaran</h2>
+                    <span class="text-xs text-gray-400">{{ count($vendors ?? []) }} vendor terdaftar</span>
                 </div>
-                <a href="{{ route('admin.vendor.index') }}" class="card-action-btn" title="Kelola Penjual">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <a href="{{ route('admin.vendor.index') }}" class="w-9 h-9 rounded-full bg-[#f4f5f9] flex items-center justify-center text-gray-500 hover:bg-[#730f00] hover:text-white transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
                     </svg>
                 </a>
             </div>
-            <div class="card-body" style="padding-top:0 !important; overflow-y:auto; max-height:240px;">
-                <table class="vendor-table">
+            <div class="overflow-y-auto max-h-[300px] pr-2">
+                <table class="w-full border-collapse text-sm">
                     <thead>
-                        <tr>
-                            <th>Vendor</th>
-                            <th>Nominal</th>
-                            <th>Status</th>
+                        <tr class="border-b-[1.5px] border-[#e8eaf0] sticky top-0 bg-white z-10">
+                            <th class="py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Vendor</th>
+                            <th class="py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Nominal</th>
+                            <th class="py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,16 +184,26 @@
                             $bs   = $bill ? $bill->status : 'unpaid';
                             if ($bs === 'unpaid' && $bill && now()->gt(\Carbon\Carbon::parse($bill->due_date))) $bs = 'overdue';
                         @endphp
-                        <tr>
-                            <td>
-                                <div style="font-weight:600;">{{ $vendor->name }}</div>
-                                <div style="font-size:11px;color:var(--gray-400);">{{ $vendor->shop->name ?? '-' }}</div>
+                        <tr class="border-b border-dashed border-[#f0f1f5] last:border-none hover:bg-gray-50 transition-colors">
+                            <td class="py-3.5 align-middle">
+                                <div class="font-bold text-[#0B132B] pt-0.5">{{ $vendor->name }}</div>
+                                <div class="text-xs text-gray-400">{{ $vendor->shop->name ?? '-' }}</div>
                             </td>
-                            <td style="font-weight:600;">Rp {{ number_format($bill->amount ?? 0, 0, ',', '.') }}</td>
-                            <td><span class="status-pill status-{{ $bs }}">{{ strtoupper($bs) }}</span></td>
+                            <td class="py-3.5 align-middle font-semibold text-gray-600">Rp {{ number_format($bill->amount ?? 0, 0, ',', '.') }}</td>
+                            <td class="py-3.5 align-middle">
+                                @if($bs === 'paid')
+                                    <span class="inline-flex px-2 py-1 rounded-md text-[10px] font-bold bg-green-50 text-green-600 uppercase">PAID</span>
+                                @elseif($bs === 'unpaid')
+                                    <span class="inline-flex px-2 py-1 rounded-md text-[10px] font-bold bg-yellow-50 text-yellow-600 uppercase">UNPAID</span>
+                                @else
+                                    <span class="inline-flex px-2 py-1 rounded-md text-[10px] font-bold bg-red-50 text-red-600 uppercase">OVERDUE</span>
+                                @endif
+                            </td>
                         </tr>
                         @empty
-                        <tr><td colspan="3" style="text-align:center;padding:20px;color:var(--gray-400);">Belum ada vendor</td></tr>
+                        <tr>
+                            <td colspan="3" class="text-center py-8 text-gray-400 text-sm">Belum ada vendor terdaftar.</td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -263,54 +211,58 @@
         </div>
 
         {{-- KANAN BAWAH: DONUT STATUS PEMBAYARAN --}}
-        <div class="card">
-            <div class="card-header">
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-[#e8eaf0] p-6 flex flex-col">
+            <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h2 class="card-title">Status Pembayaran</h2>
-                    <span class="card-sub">Ringkasan semua tagihan</span>
+                    <h2 class="text-lg font-bold pt-1 leading-relaxed">Status Pembayaran</h2>
+                    <span class="text-xs text-gray-400">Ringkasan semua tagihan</span>
                 </div>
-                <a href="{{ route('admin.invoice.index') }}" class="card-action-btn" title="Lihat Invoice">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/>
-                    </svg>
-                </a>
             </div>
-            <div class="card-body">
+            <div class="flex-1 flex flex-col items-center justify-center py-4">
                 @php
                     $pc = $paidCount ?? 0; $uc = $unpaidCount ?? 0; $oc = $overdueCount ?? 0;
                     $tot = $pc + $uc + $oc ?: 1;
                     $pPct = round(($pc/$tot)*100); $uPct = round(($uc/$tot)*100); $oPct = round(($oc/$tot)*100);
-                    $r=60; $cx=80; $cy=80; $circ=2*M_PI*$r;
+                    $r=65; $cx=80; $cy=80; $circ=2*M_PI*$r;
                     $pD=($pPct/100)*$circ; $uD=($uPct/100)*$circ; $oD=($oPct/100)*$circ;
                 @endphp
-                <div class="donut-layout">
-                    <div class="donut-svg-wrap">
-                        <svg width="160" height="160" viewBox="0 0 160 160">
-                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#f0f1f5" stroke-width="28"/>
-                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#6b8afc" stroke-width="28"
-                                stroke-dasharray="{{ $pD }} {{ $circ-$pD }}" stroke-dashoffset="0" transform="rotate(-90 {{ $cx }} {{ $cy }})"/>
-                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#facc15" stroke-width="28"
-                                stroke-dasharray="{{ $uD }} {{ $circ-$uD }}" stroke-dashoffset="{{ -$pD }}" transform="rotate(-90 {{ $cx }} {{ $cy }})"/>
-                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#f87171" stroke-width="28"
-                                stroke-dasharray="{{ $oD }} {{ $circ-$oD }}" stroke-dashoffset="{{ -$pD-$uD }}" transform="rotate(-90 {{ $cx }} {{ $cy }})"/>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-8 w-full">
+                    <div class="relative w-[160px] h-[160px] shrink-0">
+                        <svg width="160" height="160" viewBox="0 0 160 160" class="-rotate-90">
+                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#f0f1f5" stroke-width="22"/>
+                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#6b8afc" stroke-width="22"
+                                stroke-dasharray="{{ $pD }} {{ $circ }}" stroke-dashoffset="0" class="transition-all duration-1000 ease-out"/>
+                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#facc15" stroke-width="22"
+                                stroke-dasharray="{{ $uD }} {{ $circ }}" stroke-dashoffset="{{ -$pD }}" class="transition-all duration-1000 ease-out"/>
+                            <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}" fill="none" stroke="#f87171" stroke-width="22"
+                                stroke-dasharray="{{ $oD }} {{ $circ }}" stroke-dashoffset="{{ -$pD-$uD }}" class="transition-all duration-1000 ease-out"/>
                         </svg>
-                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-                            <div style="font-weight:700;font-size:20px;color:var(--navy);">{{ $tot }}</div>
-                            <div style="font-size:10px;color:var(--gray-400);">Invoice</div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="font-bold text-3xl pt-1 leading-none">{{ $tot == 1 && $pc + $uc + $oc == 0 ? 0 : $tot }}</span>
+                            <span class="text-xs text-gray-400 mt-1">Invoice</span>
                         </div>
                     </div>
-                    <div class="donut-legend">
-                        <div class="legend-row">
-                            <div class="legend-left"><div class="legend-dot" style="background:#6b8afc;"></div><span class="legend-lbl">Lunas</span></div>
-                            <span class="legend-val">{{ $pPct }}%</span>
+                    <div class="flex flex-col gap-3 w-full max-w-[130px]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-[#6b8afc]"></div>
+                                <span class="text-sm font-medium text-gray-600">Lunas</span>
+                            </div>
+                            <span class="font-bold text-sm">{{ $pPct }}%</span>
                         </div>
-                        <div class="legend-row">
-                            <div class="legend-left"><div class="legend-dot" style="background:#facc15;"></div><span class="legend-lbl">Menunggu</span></div>
-                            <span class="legend-val">{{ $uPct }}%</span>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-[#facc15]"></div>
+                                <span class="text-sm font-medium text-gray-600">Menunggu</span>
+                            </div>
+                            <span class="font-bold text-sm">{{ $uPct }}%</span>
                         </div>
-                        <div class="legend-row">
-                            <div class="legend-left"><div class="legend-dot" style="background:#f87171;"></div><span class="legend-lbl">Overdue</span></div>
-                            <span class="legend-val">{{ $oPct }}%</span>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-[#f87171]"></div>
+                                <span class="text-sm font-medium text-gray-600">Overdue</span>
+                            </div>
+                            <span class="font-bold text-sm">{{ $oPct }}%</span>
                         </div>
                     </div>
                 </div>
@@ -324,10 +276,13 @@
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.bar-fill').forEach((bar, i) => {
-        const h = bar.getAttribute('data-height');
-        setTimeout(() => { bar.style.height = h + '%'; }, 100 + i * 80);
-    });
+    // Animasi naik perlahan untuk bar chart
+    setTimeout(() => {
+        document.querySelectorAll('[data-height]').forEach((bar) => {
+            const h = bar.getAttribute('data-height');
+            bar.style.height = h + '%';
+        });
+    }, 150);
 });
 </script>
 @endsection

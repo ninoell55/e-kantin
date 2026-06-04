@@ -96,15 +96,7 @@
 
     {{-- Footer Logout --}}
     <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="sidebar-user-avatar">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-            </div>
-            <div class="sidebar-user-info">
-                <span class="sidebar-user-name">{{ Auth::user()->name }}</span>
-                <span class="sidebar-user-role">{{ strtoupper(Auth::user()->role ?? 'Admin') }}</span>
-            </div>
-        </div>
+        
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="logout-btn">
