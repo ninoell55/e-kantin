@@ -25,23 +25,23 @@ class CostumerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255|unique:users,name',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:8',
-            'phone'    => 'required|numeric|digits_between:10,15',
+            'id_number' => 'required|string|max:50|unique:users,id_number',
+            'name'      => 'required|string|max:255|unique:users,name',
+            'email'     => 'nullable|email|unique:users,email', // Ubah ke nullable
+            'password'  => 'required|min:8',
+            'phone'     => 'nullable|numeric|digits_between:10,15', // Ubah ke nullable
         ], [
-            'name.unique'   => 'Nama sudah terdaftar.',
-            'email.unique'  => 'Email sudah terdaftar.',
-            'password.min'  => 'Password minimal 8 karakter.',
-            'phone.max'     => 'Nomor telepon maksimal 20 karakter.',
+            'id_number.unique' => 'ID Number sudah digunakan.',
+            'name.unique'      => 'Nama sudah terdaftar.',
+            'password.min'     => 'Password minimal 8 karakter.',
         ]);
 
         User::create([
-            'id_number' => \Illuminate\Support\Str::random(10),
+            'id_number' => $request->id_number,
             'name'      => $request->name,
-            'email'     => $request->email,
+            'email'     => $request->email, // Bisa bernilai null
             'password'  => \Illuminate\Support\Facades\Hash::make($request->password),
-            'phone'     => $request->phone,
+            'phone'     => $request->phone, // Bisa bernilai null
             'role'      => 'customer',
             'status'    => 'active',
         ]);

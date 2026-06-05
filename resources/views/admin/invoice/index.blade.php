@@ -98,7 +98,7 @@
     <div class="vendor-group">
         <div class="vendor-group-header">
             @if($shop->banner_path)
-                <img src="{{ asset($shop->banner_path) }}" class="vendor-logo">
+                <img src="{{ asset('storage/' . $shop->banner_path) }}" class="vendor-logo">
             @else
                 <div class="vendor-logo-placeholder">{{ strtoupper(substr($shop->name, 0, 1)) }}</div>
             @endif
@@ -145,8 +145,8 @@
                     </td>
                     <td class="center">
                         @if($bill->payment_proof)
-                            <img src="{{ asset($bill->payment_proof) }}" class="proof-thumb"
-                                data-src="{{ asset($bill->payment_proof) }}" data-label="{{ $invoiceNumber }}"
+                            <img src="{{ asset('storage/' . $bill->payment_proof) }}" class="proof-thumb"
+                                data-src="{{ asset('storage/' . $bill->payment_proof) }}" data-label="{{ $invoiceNumber }}"
                                 onclick="openPhotoModal(this)">
                         @else
                             <span class="td-muted" style="font-size:12px;font-style:italic;">Tidak ada</span>
