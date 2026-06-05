@@ -33,7 +33,7 @@ class ShopBillSeeder extends Seeder
                 'amount' => 300000,
                 'due_date' => Carbon::create($currentYear, 5, 10)->toDateString(),
                 'payment_method' => 'transfer',
-                'payment_proof' => 'proofs/mei_lestari.jpg', // Contoh data dummy bukti transfer
+                'payment_proof' => 'bills/proofs/sW0TovxZOOi0JcHWfi0HxX2V1MlmRH4PEJ8CPsSZ.png', // Contoh data dummy bukti transfer
                 'status' => 'paid',
                 'created_at' => Carbon::create($currentYear, 5, 1),
                 'updated_at' => Carbon::create($currentYear, 5, 5), // Berbeda artinya sudah diproses
@@ -50,7 +50,7 @@ class ShopBillSeeder extends Seeder
                 'amount' => 275000,
                 'due_date' => Carbon::create($currentYear, 5, 15)->toDateString(),
                 'payment_method' => 'transfer',
-                'payment_proof' => 'proofs/mei_dapursmk.jpg', // Ceritanya vendor sudah upload bukti sewa
+                'payment_proof' => 'bills/proofs/sW0TovxZOOi0JcHWfi0HxX2V1MlmRH4PEJ8CPsSZ.png', // Ceritanya vendor sudah upload bukti sewa
                 'status' => 'verifying',
                 'created_at' => Carbon::create($currentYear, 5, 1),
                 'updated_at' => Carbon::create($currentYear, 5, 12),
