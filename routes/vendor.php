@@ -29,7 +29,7 @@ Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->g
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::put('/products/{product}/update', [ProductController::class, 'update'])->name('product.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('product.destroy'); // Hapus Produk
-    Route::patch('/products/{product}/toggle', [DashboardController::class, 'toggleStatus'])->name('product.toggle-status');
+    Route::patch('/products/{product}/toggle', [ProductController::class, 'toggleStatus'])->name('product.toggle-status');
 
     // Route Manajemen Pesanan
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
